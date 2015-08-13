@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/mainInfo">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/appBlue"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location Information"
+                android:textSize="30sp"
+                android:textColor="#ffffffff"
+                android:paddingLeft="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back_button"
+                android:textColor="#ffffffff"
+                android:layout_alignParentRight="true"
+                android:textSize="17sp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:onClick="returnToMain"/>
+
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location Name"
+                    style="@style/ContentHeader"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#ffff9436"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/locationNameViewLocation"
+                    android:textColor="@color/appBlue"
+                    android:text="Location"
+                    android:textSize="20sp"
+                    android:paddingLeft="15dp"
+                    android:paddingTop="5dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/addressView"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        style="@style/ContentHeader"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/appOrange"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        android:textColor="@color/appBlue"
+                        android:textSize="20sp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="5dp"
+                        android:id="@+id/locationAddressViewLocation" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/mapView"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Location"
+                        style="@style/ContentHeader"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/appOrange"/>
+
+                    <fragment
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+                        android:id="@+id/mapFragment"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/notesLayoutViewLocation">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Notes"
+                        style="@style/ContentHeader"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/appOrange"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note 1"
+                        android:textColor="@color/appBlue"
+                        android:textSize="20sp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="5dp"
+                        android:id="@+id/note1TextViewLocation"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note 2"
+                        android:textColor="@color/appBlue"
+                        android:textSize="20sp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="5dp"
+                        android:id="@+id/note2TextViewLocation"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note 3"
+                        android:textColor="@color/appBlue"
+                        android:textSize="20sp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="5dp"
+                        android:id="@+id/note3TextViewLocation"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note 4"
+                        android:textColor="@color/appBlue"
+                        android:textSize="20sp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="5dp"
+                        android:id="@+id/note4TextViewLocation"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note 5"
+                        android:textColor="@color/appBlue"
+                        android:textSize="20sp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="5dp"
+                        android:id="@+id/note5TextViewLocation"/>
+
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/reminderLayoutViewLocation">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reminder"
+                        style="@style/ContentHeader"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="@color/appOrange"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reminder Message"
+                        android:textColor="@color/appBlue"
+                        android:textSize="20sp"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="5dp"
+                        android:id="@+id/reminderTextViewLocation"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Time:"
+                            android:textColor="@color/appBlue"
+                            android:textSize="20sp"
+                            android:paddingLeft="15dp"
+                            android:paddingTop="5dp"
+                            android:id="@+id/reminderTimeViewLocation"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Date:"
+                            android:textColor="@color/appBlue"
+                            android:textSize="20sp"
+                            android:paddingRight="15dp"
+                            android:paddingTop="5dp"
+                            android:id="@+id/reminderDateViewLocation"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:textColor="#ffffffff"
+        android:background="#ffff0000"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:onClick="deleteLocation"/>
+
+</RelativeLayout>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:id="@+id/listText"
+        android:textSize="25sp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:textColor="#ff000000"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"/>
+
+    <ImageButton
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/select_location"
+        android:id="@+id/viewLocationImage"
+        android:background="#00000000"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="30dp"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/listText"
+        android:id="@+id/secondaryButtons"
+        android:visibility="gone"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="See On Map"
+            android:padding="20dp"
+            android:textColor="#ffffffff"
+            android:textSize="15sp"
+            android:background="@drawable/button1"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Route To"
+            android:padding="20dp"
+            android:textColor="#ffffffff"
+            android:textSize="15sp"
+            android:background="@drawable/button1"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="More Info"
+            android:padding="20dp"
+            android:textColor="#ffffffff"
+            android:textSize="15sp"
+            android:background="@drawable/button1"
+            android:layout_weight="1"/>
+
+        </LinearLayout>
+
+</RelativeLayout>

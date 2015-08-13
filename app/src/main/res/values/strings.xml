@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Locations</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="back_button"><![CDATA[<Back]]></string>
+    <string name="finish_location_text"><![CDATA[Done>]]></string>
+    <string name="google_maps_key">AIzaSyD3KbzyO27POmBxsvku9mGGjmW2P02Axy4</string>
+</resources>
