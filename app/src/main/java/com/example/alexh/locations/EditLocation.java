@@ -501,7 +501,6 @@ public class EditLocation extends FragmentActivity{
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
         currentLocationMarker = viewHolder.map.addMarker(new MarkerOptions().position(
                 new LatLng(latitude, longitude)).title("My Location"));
-        viewHolder.map.setMyLocationEnabled(true);
     }
 
     private void setUpMapIfNeeded() {
