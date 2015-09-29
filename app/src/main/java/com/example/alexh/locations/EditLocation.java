@@ -100,10 +100,12 @@ public class EditLocation extends FragmentActivity{
             dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //set note text to the dialog box text
-                    viewHolder.note1View.setText(input.getText().toString());
-                    //make note visible
-                    viewHolder.note1Layout.setVisibility(View.VISIBLE);
+                    if(!input.getText().toString().trim().equals("")) {
+                        //set note text to the dialog box text
+                        viewHolder.note1View.setText(input.getText().toString().trim());
+                        //make note visible
+                        viewHolder.note1Layout.setVisibility(View.VISIBLE);
+                    }
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -139,11 +141,13 @@ public class EditLocation extends FragmentActivity{
             dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //set note text to the dialog box text
-                    viewHolder.note2View.setText(input.getText().toString());
-                    //make note visible
-                    viewHolder.note2Layout.setVisibility(View.VISIBLE);
-                    viewHolder.titleBarLayout.requestFocus();
+                    if(!input.getText().toString().trim().equals("")) {
+                        //set note text to the dialog box text
+                        viewHolder.note2View.setText(input.getText().toString());
+                        //make note visible
+                        viewHolder.note2Layout.setVisibility(View.VISIBLE);
+                        viewHolder.titleBarLayout.requestFocus();
+                    }
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -179,11 +183,14 @@ public class EditLocation extends FragmentActivity{
             dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //set note text to the dialog box text
-                    viewHolder.note3View.setText(input.getText().toString());
-                    //make note visible
-                    viewHolder.note3Layout.setVisibility(View.VISIBLE);
-                    viewHolder.titleBarLayout.requestFocus();
+                    if(!input.getText().toString().trim().equals("")) {
+                        //set note text to the dialog box text
+                        viewHolder.note3View.setText(input.getText().toString());
+                        //make note visible
+                        viewHolder.note3Layout.setVisibility(View.VISIBLE);
+                        viewHolder.titleBarLayout.requestFocus();
+                    }
+
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -219,11 +226,14 @@ public class EditLocation extends FragmentActivity{
             dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //set note text to the dialog box text
-                    viewHolder.note4View.setText(input.getText().toString());
-                    //make note visible
-                    viewHolder.note4Layout.setVisibility(View.VISIBLE);
-                    viewHolder.titleBarLayout.requestFocus();
+                    if(!input.getText().toString().trim().equals("")) {
+                        //set note text to the dialog box text
+                        viewHolder.note4View.setText(input.getText().toString());
+                        //make note visible
+                        viewHolder.note4Layout.setVisibility(View.VISIBLE);
+                        viewHolder.titleBarLayout.requestFocus();
+                    }
+
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -259,12 +269,15 @@ public class EditLocation extends FragmentActivity{
             dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //set note text to the dialog box text
-                    viewHolder.note5View.setText(input.getText().toString());
-                    //make note visible
-                    viewHolder.note5Layout.setVisibility(View.VISIBLE);
-                    viewHolder.noteAddButton.setVisibility(View.GONE);
-                    viewHolder.titleBarLayout.requestFocus();
+                    if(!input.getText().toString().trim().equals("")) {
+                        //set note text to the dialog box text
+                        viewHolder.note5View.setText(input.getText().toString());
+                        //make note visible
+                        viewHolder.note5Layout.setVisibility(View.VISIBLE);
+                        viewHolder.noteAddButton.setVisibility(View.GONE);
+                        viewHolder.titleBarLayout.requestFocus();
+                    }
+
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -385,7 +398,8 @@ public class EditLocation extends FragmentActivity{
             Toast.makeText(this, "The location must have a name.", Toast.LENGTH_SHORT).show();
             return;
         }
-        //check for address field if current location is not being used
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //check for address field if current location is not being used --------------------------review this for lat&long from address
         if(!usesCurrentLocation) {
             Geocoder geocoder = new Geocoder(this);
             List<Address> address;
@@ -521,9 +535,11 @@ public class EditLocation extends FragmentActivity{
     public void toggleEditableMarker(View view) {
         if(viewHolder.currentMarker.isDraggable()) {
             viewHolder.currentMarker.draggable(false);
+            viewHolder.mapHeader.setText("Location");
         }
         else {
             viewHolder.currentMarker.draggable(true);
+            viewHolder.mapHeader.setText("Location - Edit Marker");
         }
 
     }
@@ -582,6 +598,7 @@ public class EditLocation extends FragmentActivity{
         Button timeButton;
         Button dateButton;
         EditText reminderText;
+        TextView mapHeader;
         MarkerOptions currentMarker;
 
         public Holder() {
@@ -618,6 +635,7 @@ public class EditLocation extends FragmentActivity{
             //set reminder edit text box to default status
             reminderText.setInputType(InputType.TYPE_NULL);
             */
+            mapHeader = (TextView) findViewById(R.id.mapHeaderTextEditLocation);
         }
     }
 }
