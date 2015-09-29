@@ -35,8 +35,8 @@ public class DatePickerFragment extends DialogFragment
     public void onDateSet(DatePicker view, int year, int month, int day) {
         date = new Date(month, day, year);
         //update button text
-        Button dayButton = (Button) getActivity().findViewById(R.id.reminderDayPickerButton);
+        //Button dayButton = (Button) getActivity().findViewById(R.id.reminderDayPickerButton);
         //dayButton.setText((month + 1) + "/" + day + "/" + year);
-        dayButton.setText(date.toString());
+        //dayButton.setText(date.toString());
     }
 }

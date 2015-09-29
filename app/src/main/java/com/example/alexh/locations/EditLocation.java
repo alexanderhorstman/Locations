@@ -408,6 +408,7 @@ public class EditLocation extends FragmentActivity{
             }
         }
         //check for reminder message, time, and date if reminder is enabled
+        /*
         if(viewHolder.reminderCheckbox.isChecked()) {
             if(viewHolder.reminderText.getText().toString().trim().equals("")) {
                 Toast.makeText(this, "Reminder message cannot be blank if a reminder is enabled.",
@@ -425,6 +426,7 @@ public class EditLocation extends FragmentActivity{
                 return;
             }
         }
+        */
         //create location item
         String locationName = viewHolder.locationName.getText().toString().trim();
         boolean hasReminder = viewHolder.reminderCheckbox.isChecked();
@@ -499,8 +501,8 @@ public class EditLocation extends FragmentActivity{
         viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
                 new LatLng(latitude, longitude)));
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-        currentLocationMarker = viewHolder.map.addMarker(new MarkerOptions().position(
-                new LatLng(latitude, longitude)).title("My Location"));
+        viewHolder.currentMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
+        currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarker);
     }
 
     private void setUpMapIfNeeded() {
@@ -516,8 +518,19 @@ public class EditLocation extends FragmentActivity{
         }
     }
 
+    public void toggleEditableMarker(View view) {
+        if(viewHolder.currentMarker.isDraggable()) {
+            viewHolder.currentMarker.draggable(false);
+        }
+        else {
+            viewHolder.currentMarker.draggable(true);
+        }
+
+    }
+
     //fired when the reminder check box is clicked
     //will toggle back and forth between having and not having a reminder
+    /*
     public void toggleReminderStatus(View view) {
         //if the two reminder buttons are grayed out and unavailable
         if(viewHolder.reminderCheckbox.isChecked()) {
@@ -545,6 +558,7 @@ public class EditLocation extends FragmentActivity{
             viewHolder.reminderText.setInputType(InputType.TYPE_NULL);
         }
     }
+    */
 
     private class Holder {
         EditText locationName;
@@ -568,6 +582,7 @@ public class EditLocation extends FragmentActivity{
         Button timeButton;
         Button dateButton;
         EditText reminderText;
+        MarkerOptions currentMarker;
 
         public Holder() {
             //initialize all of the views
@@ -587,10 +602,12 @@ public class EditLocation extends FragmentActivity{
             note4Layout = (RelativeLayout) findViewById(R.id.note4Layout);
             note5Layout = (RelativeLayout) findViewById(R.id.note5Layout);
             titleBarLayout = (RelativeLayout) findViewById(R.id.titleBarEditLocation);
+            /*
             reminderCheckbox = (CheckBox) findViewById(R.id.includeReminderCheckbox);
             timeButton = (Button) findViewById(R.id.reminderTimePickerButton);
             dateButton = (Button) findViewById(R.id.reminderDayPickerButton);
             reminderText = (EditText) findViewById(R.id.reminderEditTextEditLocation);
+
             //set the buttons to their default status
             timeButton.setTextColor(Color.DKGRAY);
             dateButton.setTextColor(Color.DKGRAY);
@@ -600,6 +617,7 @@ public class EditLocation extends FragmentActivity{
             dateButton.setClickable(false);
             //set reminder edit text box to default status
             reminderText.setInputType(InputType.TYPE_NULL);
+            */
         }
     }
 }

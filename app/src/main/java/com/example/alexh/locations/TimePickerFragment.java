@@ -45,7 +45,7 @@ public class TimePickerFragment extends DialogFragment
         boolean isAm = true;
         int hour;
         //get the button from the time button's id
-        Button timeButton = (Button) getActivity().findViewById(R.id.reminderTimePickerButton);
+        //Button timeButton = (Button) getActivity().findViewById(R.id.reminderTimePickerButton);
         if(hourOfDay > 11) {
             isAm = false;
             //changes the hour to a 12 hour format if the time is in PM
@@ -61,6 +61,6 @@ public class TimePickerFragment extends DialogFragment
         }
         time = new Time(hour, minute, isAm, hourOfDay);
         //set the button text to the new time
-        timeButton.setText(time.toString());
+        //timeButton.setText(time.toString());
     }
 }
