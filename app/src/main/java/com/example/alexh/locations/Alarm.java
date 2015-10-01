@@ -1,6 +1,14 @@
 package com.example.alexh.locations;
 
-public class Alarm {
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
+import java.io.Serializable;
+import java.util.Calendar;
+
+public class Alarm implements Serializable{
 
     String message;
     Time time;
@@ -11,6 +19,7 @@ public class Alarm {
         this.message = message;
         this.time = time;
         this.date = date;
+        setAlarm();
     }
 
     public void cancelAlarm() {
@@ -37,8 +46,23 @@ public class Alarm {
         return time;
     }
 
-    public void setAlarm() {
-
+    public void setAlarm(Context context) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, time.getHourOfDay());
+        calendar.set(Calendar.MINUTE, time.getMinute());
+        calendar.set(Calendar.MONTH, date.getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, date.getDay());
+        calendar.set(Calendar.YEAR, date.getYear());
+        //set alarm
+        AlarmManager alarmManager = (AlarmManager) context
+                .getSystemService(Context.ALARM_SERVICE);
+        //intent fires the AlertReceiver class
+        Intent intent = new Intent(context, AlertReceiver.class);
+        //sets alarm using new item's id number
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                PendingIntent.getBroadcast(context,
+                        getAlarmId(), intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT));
     }
 
 }

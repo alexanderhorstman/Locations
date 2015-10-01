@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ViewLocation extends FragmentActivity {
 
@@ -143,7 +144,7 @@ public class ViewLocation extends FragmentActivity {
             }
             if(item.hasNotes()) {
                 notesView.setVisibility(View.VISIBLE);
-                ArrayList<String> notes = item.getNotes();
+                List<String> notes = item.getNotes();
                 int numNotes = notes.size();
                 if(numNotes == 5) {
                     note1.setVisibility(View.VISIBLE);

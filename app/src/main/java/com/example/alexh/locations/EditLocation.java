@@ -33,6 +33,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Calendar;
 import java.util.List;
 
 public class EditLocation extends FragmentActivity{
@@ -445,13 +446,15 @@ public class EditLocation extends FragmentActivity{
         String locationName = viewHolder.locationName.getText().toString().trim();
         boolean hasReminder = viewHolder.reminderCheckbox.isChecked();
         if(usesCurrentLocation && hasReminder) {
-            String message = viewHolder.reminderText.getText().toString().trim();
-            Time time = timePickerFragment.getTime();
-            Date date = datePickerFragment.getDate();
+            if(!verifyAlarmTime()) {
+                return;
+            }
+            Alarm alarm = new Alarm(viewHolder.reminderText.getText().toString().trim(),
+                    timePickerFragment.getTime(), datePickerFragment.getDate());
             LatLng latLng = currentLocationMarker.getPosition();
             double latitude = latLng.latitude;
             double longitude = latLng.longitude;
-            newLocationItem = new LocationItem(locationName, longitude, latitude, message, time, date);
+            newLocationItem = new LocationItem(locationName, longitude, latitude, alarm);
         }
         else if (usesCurrentLocation && !hasReminder) {
             LatLng latLng = currentLocationMarker.getPosition();
@@ -460,11 +463,14 @@ public class EditLocation extends FragmentActivity{
             newLocationItem = new LocationItem(locationName, longitude, latitude);
         }
         else if(!usesCurrentLocation && hasReminder) {
+            if(!verifyAlarmTime()) {
+                return;
+            }
             String address = viewHolder.address.getText().toString();
-            String message = viewHolder.reminderText.getText().toString().trim();
-            Time time = timePickerFragment.getTime();
-            Date date = datePickerFragment.getDate();
-            newLocationItem = new LocationItem(locationName, address, message, time, date);
+            Alarm alarm = new Alarm(viewHolder.reminderText.getText().toString().trim(),
+                    timePickerFragment.getTime(), datePickerFragment.getDate());
+            newLocationItem = new LocationItem(locationName, address, alarm);
+            newLocationItem.getAlarm().setAlarm(this);
         }
         else {
             String address = viewHolder.address.getText().toString();
@@ -575,6 +581,23 @@ public class EditLocation extends FragmentActivity{
         }
     }
     */
+
+    private boolean verifyAlarmTime() {
+        Calendar calendar = Calendar.getInstance();
+        Time time = timePickerFragment.getTime();
+        Date date = datePickerFragment.getDate();
+        if(calendar.get(Calendar.YEAR) <= date.getYear()
+                && calendar.get(Calendar.MONTH) <= date.getMonth()
+                && calendar.get(Calendar.DAY_OF_MONTH) <= date.getDay()
+                && (calendar.get(Calendar.HOUR_OF_DAY) < time.getHourOfDay()
+                || calendar.get(Calendar.HOUR_OF_DAY) == time.getHourOfDay()
+                && calendar.get(Calendar.MINUTE) < time.getMinute())) {
+            return true;
+        }
+        Toast.makeText(this, "An alarm cannot be created in the past. Please choose a new alarm time.",
+                Toast.LENGTH_SHORT).show();
+        return false;
+    }
 
     private class Holder {
         EditText locationName;

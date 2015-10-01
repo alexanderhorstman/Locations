@@ -6,17 +6,20 @@
 
 package com.example.alexh.locations;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-public class LocationItem {
+public class LocationItem implements Serializable{
+    private Alarm alarm;
     private String name;	//The name of the location.
     private String address;	//Address of the location.
     private String reminderMessage;
     private double latitude;	//Latitude of the location.
     private double longitude;	//Longitude of the location.
-    private Calendar timeAdded;	//Calendar object that has not been set.
-    private ArrayList<String> notes = new ArrayList<>();	//New String array that can hold 5 strings.
+    //private Calendar timeAdded;	//Calendar object that has not been set.
+    private List<String> notes = new ArrayList<>();	//New String array that can hold 5 strings.
     private int numNotes = 0;	//An int to keep track of how many notes have been added.
     private Time reminderTime;	//A time object for the reminderTime.
     private Date reminderDate;	//A date object for the reminderDate.
@@ -37,6 +40,23 @@ public class LocationItem {
         this.address = address;
     }
 
+    public LocationItem(String name, double longitude, double latitude, Alarm alarm) {
+        this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.alarm = alarm;
+    }
+
+    public LocationItem(String name, String address, Alarm alarm) {
+        this.name = name;
+        this.address = address;
+        this.alarm = alarm;
+    }
+
+    /*
+
+     //To remove later
+
     public LocationItem(String name ,double longitude, double latitude, String reminderMessage, Time reminderTime, Date reminderDate) {
         this.name = name;
         this.longitude = longitude;
@@ -53,6 +73,7 @@ public class LocationItem {
         this.reminderTime = reminderTime;
         this.reminderDate = reminderDate;
     }
+    */
 	
 	/*
 	 * Methods:
@@ -70,6 +91,10 @@ public class LocationItem {
 	 * 	getReminderTime()
 	 * 	getReminderDate()
 	 */
+
+    public Alarm getAlarm() {
+        return alarm;
+    }
 
     public String getName() {
         return name;
@@ -91,7 +116,7 @@ public class LocationItem {
         return notes.get(index);
     }
 
-    public ArrayList<String> getNotes() {
+    public List<String> getNotes() {
         return notes;
     }
 
@@ -107,9 +132,11 @@ public class LocationItem {
         return reminderDate;
     }
 
+    /*
     public Calendar getTimeAdded() {
         return timeAdded;
     }
+    */
 
 	/*
 	 * Setters:
@@ -138,9 +165,11 @@ public class LocationItem {
         this.longitude = longitude;
     }
 
+    /*
     public void setTimeAdded(Calendar timeAdded) {
         this.timeAdded = timeAdded;
     }
+    */
 
     public void setReminderTime(Time reminderTime) {
         this.reminderTime = reminderTime;

@@ -1,15 +1,17 @@
 package com.example.alexh.locations;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Alex H on 7/8/2015.
  */
-public class LocationArray {
+public class LocationArray implements Serializable{
 
     public static final int SORT_ALPHABETICAL = 1;
 
-    private ArrayList<LocationItem> list;
+    private List<LocationItem> list;
     private int sortType = SORT_ALPHABETICAL;
 
     //default constructor does nothing
