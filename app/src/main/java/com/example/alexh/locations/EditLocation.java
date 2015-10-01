@@ -19,6 +19,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -523,6 +524,29 @@ public class EditLocation extends FragmentActivity{
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
         viewHolder.currentMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
         currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarker);
+        viewHolder.map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+            @Override
+            public void onMarkerDragStart(Marker arg0) {
+                // TODO Auto-generated method stub
+                Log.d("System out", "onMarkerDragStart..." + arg0.getPosition().latitude + "..." + arg0.getPosition().longitude);
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onMarkerDragEnd(Marker arg0) {
+                // TODO Auto-generated method stub
+                Log.d("System out", "onMarkerDragEnd..."+arg0.getPosition().latitude+"..."+arg0.getPosition().longitude);
+
+                viewHolder.map.animateCamera(CameraUpdateFactory.newLatLng(arg0.getPosition()));
+            }
+
+            @Override
+            public void onMarkerDrag(Marker arg0) {
+                // TODO Auto-generated method stub
+                viewHolder.currentMarker.position(new LatLng(arg0.getPosition().latitude, arg0.getPosition().longitude));
+                Log.i("System out", "onMarkerDrag...");
+            }
+        });
     }
 
     private void setUpMapIfNeeded() {
@@ -542,10 +566,12 @@ public class EditLocation extends FragmentActivity{
         if(viewHolder.currentMarker.isDraggable()) {
             viewHolder.currentMarker.draggable(false);
             viewHolder.mapHeader.setText("Location");
+            viewHolder.moveMarkerText.setText("Move Marker");
         }
         else {
             viewHolder.currentMarker.draggable(true);
             viewHolder.mapHeader.setText("Location - Edit Marker");
+            viewHolder.moveMarkerText.setText("Set Marker Position");
         }
 
     }
@@ -622,6 +648,7 @@ public class EditLocation extends FragmentActivity{
         Button dateButton;
         EditText reminderText;
         TextView mapHeader;
+        TextView moveMarkerText;
         MarkerOptions currentMarker;
 
         public Holder() {
@@ -659,6 +686,7 @@ public class EditLocation extends FragmentActivity{
             reminderText.setInputType(InputType.TYPE_NULL);
             */
             mapHeader = (TextView) findViewById(R.id.mapHeaderTextEditLocation);
+            moveMarkerText = (TextView) findViewById(R.id.moveMarkerText);
         }
     }
 }

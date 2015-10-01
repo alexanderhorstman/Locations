@@ -12,6 +12,7 @@ public class BootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        /*
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
             //reset alarms for current items in list
             for(int i = 0; i < Globals.list.sizeOf(); i++) {
@@ -59,5 +60,6 @@ public class BootReceiver extends BroadcastReceiver {
                 }
             }
         }
+        */
     }
 }

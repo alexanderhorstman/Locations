@@ -128,6 +128,7 @@
                 android:text="Move Marker"
                 android:textSize="20sp"
                 android:textColor="@color/appBlue"
+                android:id="@+id/moveMarkerText"
                 android:onClick="toggleEditableMarker"/>
 
             <RelativeLayout

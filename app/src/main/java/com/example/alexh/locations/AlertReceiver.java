@@ -21,6 +21,7 @@ public class AlertReceiver extends BroadcastReceiver{
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        /*
         this.context = context;
         //the type of alarm that is waking up the app
         String alarmType = intent.getStringExtra("alarm type");
@@ -36,8 +37,10 @@ public class AlertReceiver extends BroadcastReceiver{
             priority = intent.getIntExtra("priority", Item.PRIORITY_NORMAL);
             createNotification(context, "Checklist Reminder", task, "Checklist Reminder");
         }
+        */
     }
 
+    /*
     private void addAllDailyTasks() {
         //try block will only work if the presets list has items in it
         try {
@@ -123,4 +126,5 @@ public class AlertReceiver extends BroadcastReceiver{
         //refreshes the list view
         listView.refreshDrawableState();
     }
+    */
 }

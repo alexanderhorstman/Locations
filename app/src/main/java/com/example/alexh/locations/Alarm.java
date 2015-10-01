@@ -19,7 +19,7 @@ public class Alarm implements Serializable{
         this.message = message;
         this.time = time;
         this.date = date;
-        setAlarm();
+        //setAlarm();
     }
 
     public void cancelAlarm() {
