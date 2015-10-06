@@ -1,10 +1,7 @@
 package com.example.alexh.locations;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -19,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ViewLocation extends FragmentActivity {
@@ -132,7 +128,10 @@ public class ViewLocation extends FragmentActivity {
             reminderText = (TextView) findViewById(R.id.reminderTextViewLocation);
             reminderTime = (TextView) findViewById(R.id.reminderTimeViewLocation);
             reminderDate = (TextView) findViewById(R.id.reminderDateViewLocation);
+            //move to "initialize()" method
             locationName.setText(item.getName());
+
+            //move to "initialize()" method
             if(item.getAddress() == null) {
                 addressView.setVisibility(View.GONE);
                 mapView.setVisibility(View.VISIBLE);
@@ -210,22 +209,6 @@ public class ViewLocation extends FragmentActivity {
             }
             else {
                 notesView.setVisibility(View.GONE);
-            }
-            if(item.getReminderTime() == null && item.getReminderDate() == null) {
-                reminderView.setVisibility(View.GONE);
-            }
-            else if(item.getReminderText().equals("")) {
-                reminderView.setVisibility(View.VISIBLE);
-                reminderText.setVisibility(View.GONE);
-                reminderTime.setText("Time: " + item.getReminderTime().toString());
-                reminderDate.setText("Date: " + item.getReminderDate().toString());
-            }
-            else {
-                reminderView.setVisibility(View.VISIBLE);
-                reminderText.setVisibility(View.VISIBLE);
-                reminderText.setText(item.getReminderText());
-                reminderTime.setText("Time: " + item.getReminderTime().toString());
-                reminderDate.setText("Date: " + item.getReminderDate().toString());
             }
         }
     }

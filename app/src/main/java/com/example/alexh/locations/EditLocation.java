@@ -11,7 +11,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -22,28 +22,21 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Calendar;
 import java.util.List;
 
 public class EditLocation extends FragmentActivity{
 
     boolean usesCurrentLocation = true;
     Holder viewHolder;
-    DatePickerFragment datePickerFragment;
-    TimePickerFragment timePickerFragment;
     Marker currentLocationMarker;
+    String locationType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +44,7 @@ public class EditLocation extends FragmentActivity{
         setContentView(R.layout.edit_location);
         viewHolder = new Holder();
         Intent previousActivity = getIntent();
-        String locationType = previousActivity.getStringExtra("location type");
+        locationType = previousActivity.getStringExtra("location type");
         if(locationType.equals("current location")) {
             try {
                 usesCurrentLocation = true;
@@ -292,20 +285,6 @@ public class EditLocation extends FragmentActivity{
         }
     }
 
-    //fires when date picker button is clicked
-    public void chooseReminderDay(View view) {
-        //creates a new date picker dialog
-        datePickerFragment = new DatePickerFragment();
-        datePickerFragment.show(getFragmentManager(), "datePicker");
-    }
-
-    //fires when time picker button is clicked
-    public void chooseReminderTime(View view) {
-        //creates a new time picker dialog
-        timePickerFragment = new TimePickerFragment();
-        timePickerFragment.show(getFragmentManager(), "timePicker");
-    }
-
     public void deleteNote(View view) {
         int buttonId = view.getId();
         switch (buttonId) {
@@ -404,18 +383,30 @@ public class EditLocation extends FragmentActivity{
         //check for address field if current location is not being used --------------------------review this for lat&long from address
         if(!usesCurrentLocation) {
             Geocoder geocoder = new Geocoder(this);
-            List<Address> address;
+            List<Address> possibleAddresses;
+            String address = viewHolder.address.getText().toString().trim();
 
-            if(viewHolder.address.getText().toString().trim().equals("")) {
+            if(!Geocoder.isPresent()) {
+                Toast.makeText(this, "There is no geocoder backend service available.", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "Geocoder is working correctly.", Toast.LENGTH_SHORT).show();
+            }
+            if(address.equals("")) {
                 Toast.makeText(this, "The location must have an address.", Toast.LENGTH_SHORT).show();
                 return;
             }
             try {
-                address = geocoder.getFromLocationName(viewHolder.locationName.getText().toString().trim(), 5);
-                if(address == null) {
+                possibleAddresses = geocoder.getFromLocationName(address, 5);
+                if(possibleAddresses == null) {
                     Toast.makeText(this, "The address given does not match any real address.",
                             Toast.LENGTH_SHORT).show();
                     return;
+                }
+                else {
+                    Address firstAddress = possibleAddresses.get(0);
+                    LatLng addressLatLng = new LatLng(firstAddress.getLatitude(), firstAddress.getLongitude());
+                    viewHolder.currentMarker.position(addressLatLng);
                 }
             }
             catch (Exception e) {
@@ -423,55 +414,13 @@ public class EditLocation extends FragmentActivity{
                 return;
             }
         }
-        //check for reminder message, time, and date if reminder is enabled
-        /*
-        if(viewHolder.reminderCheckbox.isChecked()) {
-            if(viewHolder.reminderText.getText().toString().trim().equals("")) {
-                Toast.makeText(this, "Reminder message cannot be blank if a reminder is enabled.",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-            else if(viewHolder.timeButton.getText().equals("Time")) {
-                Toast.makeText(this, "Reminder time cannot be blank if a reminder is enabled.",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-            else if(viewHolder.dateButton.getText().equals("Date")) {
-                Toast.makeText(this, "Reminder date cannot be blank if a reminder is enabled.",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-        */
         //create location item
         String locationName = viewHolder.locationName.getText().toString().trim();
-        boolean hasReminder = viewHolder.reminderCheckbox.isChecked();
-        if(usesCurrentLocation && hasReminder) {
-            if(!verifyAlarmTime()) {
-                return;
-            }
-            Alarm alarm = new Alarm(viewHolder.reminderText.getText().toString().trim(),
-                    timePickerFragment.getTime(), datePickerFragment.getDate());
-            LatLng latLng = currentLocationMarker.getPosition();
-            double latitude = latLng.latitude;
-            double longitude = latLng.longitude;
-            newLocationItem = new LocationItem(locationName, longitude, latitude, alarm);
-        }
-        else if (usesCurrentLocation && !hasReminder) {
+        if (usesCurrentLocation) {
             LatLng latLng = currentLocationMarker.getPosition();
             double latitude = latLng.latitude;
             double longitude = latLng.longitude;
             newLocationItem = new LocationItem(locationName, longitude, latitude);
-        }
-        else if(!usesCurrentLocation && hasReminder) {
-            if(!verifyAlarmTime()) {
-                return;
-            }
-            String address = viewHolder.address.getText().toString();
-            Alarm alarm = new Alarm(viewHolder.reminderText.getText().toString().trim(),
-                    timePickerFragment.getTime(), datePickerFragment.getDate());
-            newLocationItem = new LocationItem(locationName, address, alarm);
-            newLocationItem.getAlarm().setAlarm(this);
         }
         else {
             String address = viewHolder.address.getText().toString();
@@ -501,6 +450,54 @@ public class EditLocation extends FragmentActivity{
         finish();
     }
 
+    public void refreshMap(View view) {
+        if(locationType.equals("current location")) {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double latitude = currentLocation.getLatitude();
+            double longitude = currentLocation.getLongitude();
+            viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
+                    new LatLng(latitude, longitude)));
+            viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
+            viewHolder.currentMarker.position(new LatLng(latitude, longitude));
+        }
+        else if(locationType.equals("new location")) {
+            Geocoder geocoder = new Geocoder(this);
+            List<Address> possibleAddresses;
+            String address = viewHolder.address.getText().toString().trim();
+
+            //check to make sure Geocoder is available
+            if(!Geocoder.isPresent()) {
+                Toast.makeText(this, "There is no geocoder backend service available.", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(this, "Geocoder is working correctly.", Toast.LENGTH_SHORT).show();
+            }
+            //check to make sure there is an address being analyzed
+            if(address.equals("")) {
+                Toast.makeText(this, "The location must have an address.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                possibleAddresses = geocoder.getFromLocationName(address, 5);
+                if(possibleAddresses == null) {
+                    Toast.makeText(this, "The address given does not match any real address.",
+                            Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Address firstAddress = possibleAddresses.get(0);
+                    LatLng addressLatLng = new LatLng(firstAddress.getLatitude(), firstAddress.getLongitude());
+                    viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(addressLatLng));
+                    viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
+                    viewHolder.currentMarker.position(addressLatLng);
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //used to save the list to file
     public void saveLocationsList() {
         //opens the list file and writes the list to it without append
@@ -524,34 +521,17 @@ public class EditLocation extends FragmentActivity{
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
         viewHolder.currentMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
         currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarker);
-        viewHolder.map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+        viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
-            public void onMarkerDragStart(Marker arg0) {
-                // TODO Auto-generated method stub
-                Log.d("System out", "onMarkerDragStart..." + arg0.getPosition().latitude + "..." + arg0.getPosition().longitude);
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public void onMarkerDragEnd(Marker arg0) {
-                // TODO Auto-generated method stub
-                Log.d("System out", "onMarkerDragEnd..."+arg0.getPosition().latitude+"..."+arg0.getPosition().longitude);
-
-                viewHolder.map.animateCamera(CameraUpdateFactory.newLatLng(arg0.getPosition()));
-            }
-
-            @Override
-            public void onMarkerDrag(Marker arg0) {
-                // TODO Auto-generated method stub
-                viewHolder.currentMarker.position(new LatLng(arg0.getPosition().latitude, arg0.getPosition().longitude));
-                Log.i("System out", "onMarkerDrag...");
+            public void onMapLongClick(LatLng latLng) {
+                viewHolder.currentMarker.position(latLng);
             }
         });
     }
 
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
-        if (viewHolder.map == null) {
+        while (viewHolder.map == null) {
             // Try to obtain the map from the SupportMapFragment.
             viewHolder.map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment))
                     .getMap();
@@ -560,69 +540,6 @@ public class EditLocation extends FragmentActivity{
                 setUpMap();
             }
         }
-    }
-
-    public void toggleEditableMarker(View view) {
-        if(viewHolder.currentMarker.isDraggable()) {
-            viewHolder.currentMarker.draggable(false);
-            viewHolder.mapHeader.setText("Location");
-            viewHolder.moveMarkerText.setText("Move Marker");
-        }
-        else {
-            viewHolder.currentMarker.draggable(true);
-            viewHolder.mapHeader.setText("Location - Edit Marker");
-            viewHolder.moveMarkerText.setText("Set Marker Position");
-        }
-
-    }
-
-    //fired when the reminder check box is clicked
-    //will toggle back and forth between having and not having a reminder
-    /*
-    public void toggleReminderStatus(View view) {
-        //if the two reminder buttons are grayed out and unavailable
-        if(viewHolder.reminderCheckbox.isChecked()) {
-            //sets their colors to black
-            viewHolder.timeButton.setTextColor(Color.BLACK);
-            viewHolder.dateButton.setTextColor(Color.BLACK);
-            viewHolder.timeButton.setBackgroundColor(getResources().getColor(R.color.appBlue));
-            viewHolder.dateButton.setBackgroundColor(getResources().getColor(R.color.appBlue));
-            //makes them clickable
-            viewHolder.timeButton.setClickable(true);
-            viewHolder.dateButton.setClickable(true);
-            viewHolder.reminderText.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES |
-                    InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-        }
-        //if the two reminder buttons are black and available
-        else {
-            //sets their colors to gray
-            viewHolder.timeButton.setTextColor(Color.DKGRAY);
-            viewHolder.dateButton.setTextColor(Color.DKGRAY);
-            viewHolder.timeButton.setBackgroundColor(Color.GRAY);
-            viewHolder.dateButton.setBackgroundColor(Color.GRAY);
-            //makes them unclickable
-            viewHolder.timeButton.setClickable(false);
-            viewHolder.dateButton.setClickable(false);
-            viewHolder.reminderText.setInputType(InputType.TYPE_NULL);
-        }
-    }
-    */
-
-    private boolean verifyAlarmTime() {
-        Calendar calendar = Calendar.getInstance();
-        Time time = timePickerFragment.getTime();
-        Date date = datePickerFragment.getDate();
-        if(calendar.get(Calendar.YEAR) <= date.getYear()
-                && calendar.get(Calendar.MONTH) <= date.getMonth()
-                && calendar.get(Calendar.DAY_OF_MONTH) <= date.getDay()
-                && (calendar.get(Calendar.HOUR_OF_DAY) < time.getHourOfDay()
-                || calendar.get(Calendar.HOUR_OF_DAY) == time.getHourOfDay()
-                && calendar.get(Calendar.MINUTE) < time.getMinute())) {
-            return true;
-        }
-        Toast.makeText(this, "An alarm cannot be created in the past. Please choose a new alarm time.",
-                Toast.LENGTH_SHORT).show();
-        return false;
     }
 
     private class Holder {
@@ -643,12 +560,6 @@ public class EditLocation extends FragmentActivity{
         RelativeLayout note3Layout;
         RelativeLayout note4Layout;
         RelativeLayout note5Layout;
-        CheckBox reminderCheckbox;
-        Button timeButton;
-        Button dateButton;
-        EditText reminderText;
-        TextView mapHeader;
-        TextView moveMarkerText;
         MarkerOptions currentMarker;
 
         public Holder() {
@@ -669,24 +580,6 @@ public class EditLocation extends FragmentActivity{
             note4Layout = (RelativeLayout) findViewById(R.id.note4Layout);
             note5Layout = (RelativeLayout) findViewById(R.id.note5Layout);
             titleBarLayout = (RelativeLayout) findViewById(R.id.titleBarEditLocation);
-            /*
-            reminderCheckbox = (CheckBox) findViewById(R.id.includeReminderCheckbox);
-            timeButton = (Button) findViewById(R.id.reminderTimePickerButton);
-            dateButton = (Button) findViewById(R.id.reminderDayPickerButton);
-            reminderText = (EditText) findViewById(R.id.reminderEditTextEditLocation);
-
-            //set the buttons to their default status
-            timeButton.setTextColor(Color.DKGRAY);
-            dateButton.setTextColor(Color.DKGRAY);
-            timeButton.setBackgroundColor(Color.GRAY);
-            dateButton.setBackgroundColor(Color.GRAY);
-            timeButton.setClickable(false);
-            dateButton.setClickable(false);
-            //set reminder edit text box to default status
-            reminderText.setInputType(InputType.TYPE_NULL);
-            */
-            mapHeader = (TextView) findViewById(R.id.mapHeaderTextEditLocation);
-            moveMarkerText = (TextView) findViewById(R.id.moveMarkerText);
         }
     }
 }

@@ -100,14 +100,30 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/mapView"
-                android:visibility="gone">
+                android:visibility="visible">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Location"
-                    android:id="@+id/mapHeaderTextEditLocation"
-                    style="@style/ContentHeader"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Location"
+                        android:id="@+id/mapHeaderTextEditLocation"
+                        style="@style/ContentHeader"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" - Refresh"
+                        android:onClick="refreshMap"
+                        android:textSize="25sp"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/appBlue"/>
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -121,15 +137,6 @@
                     android:id="@+id/mapFragment"/>
 
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Move Marker"
-                android:textSize="20sp"
-                android:textColor="@color/appBlue"
-                android:id="@+id/moveMarkerText"
-                android:onClick="toggleEditableMarker"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -309,61 +316,6 @@
                     android:layout_alignParentEnd="true" />
 
             </RelativeLayout>
-
-            <!--
-            <CheckBox
-                android:id="@+id/includeReminderCheckbox"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:onClick="toggleReminderStatus"
-                android:text="Reminder"
-                style="@style/ContentHeader" />
-
-            <View
-                android:background="@color/appOrange"
-                android:layout_height="2dp"
-                android:layout_width="match_parent" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/appBlue"
-                android:textSize="20sp"
-                android:id="@+id/reminderEditTextEditLocation"
-                android:inputType="textMultiLine|textCapSentences|textAutoComplete|textAutoCorrect"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp">
-
-                <Button
-                    android:id="@+id/reminderTimePickerButton"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:onClick="chooseReminderTime"
-                    android:paddingLeft="15dp"
-                    android:text="Time"
-                    android:background="@color/appBlue"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="2dp"/>
-
-                <Button
-                    android:id="@+id/reminderDayPickerButton"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:onClick="chooseReminderDay"
-                    android:paddingRight="15dp"
-                    android:text="Date"
-                    android:background="@color/appBlue"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="5dp"/>
-
-                </LinearLayout>
-                -->
 
             </LinearLayout>
 
