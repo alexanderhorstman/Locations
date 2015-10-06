@@ -29,17 +29,6 @@ public class LocationItem implements Serializable {
         this.name = name;
         this.address = address;
     }
-
-    public LocationItem(String name, double longitude, double latitude, Alarm alarm) {
-        this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
-    }
-
-    public LocationItem(String name, String address, Alarm alarm) {
-        this.name = name;
-        this.address = address;
-    }
 	
 	/*
 	 * Methods:

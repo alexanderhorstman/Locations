@@ -210,64 +210,6 @@
 
                     </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/reminderLayoutViewLocation">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reminder"
-                        style="@style/ContentHeader"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@color/appOrange"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reminder Message"
-                        android:textColor="@color/appBlue"
-                        android:textSize="20sp"
-                        android:paddingLeft="15dp"
-                        android:paddingTop="5dp"
-                        android:id="@+id/reminderTextViewLocation"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Time:"
-                            android:textColor="@color/appBlue"
-                            android:textSize="20sp"
-                            android:paddingLeft="15dp"
-                            android:paddingTop="5dp"
-                            android:id="@+id/reminderTimeViewLocation"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Date:"
-                            android:textColor="@color/appBlue"
-                            android:textSize="20sp"
-                            android:paddingRight="15dp"
-                            android:paddingTop="5dp"
-                            android:id="@+id/reminderDateViewLocation"/>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
                 </LinearLayout>
 
             </ScrollView>
