@@ -19,7 +19,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -59,7 +58,7 @@ public class EditLocation extends FragmentActivity{
         }
         else if(locationType.equals("new location")) {
             usesCurrentLocation = false;
-            viewHolder.mapView.setVisibility(View.GONE);
+            viewHolder.mapView.setVisibility(View.VISIBLE);
             viewHolder.addressView.setVisibility(View.VISIBLE);
         }
         //exit if the location type is not one of the two expected values
@@ -406,7 +405,8 @@ public class EditLocation extends FragmentActivity{
                 else {
                     Address firstAddress = possibleAddresses.get(0);
                     LatLng addressLatLng = new LatLng(firstAddress.getLatitude(), firstAddress.getLongitude());
-                    viewHolder.currentMarker.position(addressLatLng);
+                    viewHolder.currentMarkerOptions.position(addressLatLng);
+
                 }
             }
             catch (Exception e) {
@@ -459,7 +459,7 @@ public class EditLocation extends FragmentActivity{
             viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
                     new LatLng(latitude, longitude)));
             viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-            viewHolder.currentMarker.position(new LatLng(latitude, longitude));
+            viewHolder.currentMarkerOptions.position(new LatLng(latitude, longitude));
         }
         else if(locationType.equals("new location")) {
             Geocoder geocoder = new Geocoder(this);
@@ -471,7 +471,7 @@ public class EditLocation extends FragmentActivity{
                 Toast.makeText(this, "There is no geocoder backend service available.", Toast.LENGTH_LONG).show();
             }
             else {
-                Toast.makeText(this, "Geocoder is working correctly.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Geocoder is working correctly.", Toast.LENGTH_SHORT).show();
             }
             //check to make sure there is an address being analyzed
             if(address.equals("")) {
@@ -484,12 +484,17 @@ public class EditLocation extends FragmentActivity{
                     Toast.makeText(this, "The address given does not match any real address.",
                             Toast.LENGTH_SHORT).show();
                 }
+                else if(possibleAddresses.get(0) == null) {
+                    Toast.makeText(this, "The address given does not match any real address.",
+                            Toast.LENGTH_SHORT).show();
+                }
                 else {
                     Address firstAddress = possibleAddresses.get(0);
                     LatLng addressLatLng = new LatLng(firstAddress.getLatitude(), firstAddress.getLongitude());
                     viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(addressLatLng));
                     viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-                    viewHolder.currentMarker.position(addressLatLng);
+                    viewHolder.currentMarkerOptions = new MarkerOptions().position(addressLatLng).title("My Location");
+                    currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
                 }
             }
             catch (Exception e) {
@@ -519,12 +524,12 @@ public class EditLocation extends FragmentActivity{
         viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
                 new LatLng(latitude, longitude)));
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-        viewHolder.currentMarker = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
-        currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarker);
+        viewHolder.currentMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
+        currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
         viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                viewHolder.currentMarker.position(latLng);
+                currentLocationMarker.setPosition(latLng);
             }
         });
     }
@@ -560,7 +565,7 @@ public class EditLocation extends FragmentActivity{
         RelativeLayout note3Layout;
         RelativeLayout note4Layout;
         RelativeLayout note5Layout;
-        MarkerOptions currentMarker;
+        MarkerOptions currentMarkerOptions;
 
         public Holder() {
             //initialize all of the views

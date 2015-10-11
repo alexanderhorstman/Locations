@@ -106,10 +106,6 @@ public class ViewLocation extends FragmentActivity {
         TextView note3;
         TextView note4;
         TextView note5;
-        LinearLayout reminderView;
-        TextView reminderText;
-        TextView reminderTime;
-        TextView reminderDate;
         GoogleMap map;
 
         public Holder(int itemIndex) {
@@ -124,10 +120,6 @@ public class ViewLocation extends FragmentActivity {
             note3 = (TextView) findViewById(R.id.note3TextViewLocation);
             note4 = (TextView) findViewById(R.id.note4TextViewLocation);
             note5 = (TextView) findViewById(R.id.note5TextViewLocation);
-            reminderView = (LinearLayout) findViewById(R.id.reminderLayoutViewLocation);
-            reminderText = (TextView) findViewById(R.id.reminderTextViewLocation);
-            reminderTime = (TextView) findViewById(R.id.reminderTimeViewLocation);
-            reminderDate = (TextView) findViewById(R.id.reminderDateViewLocation);
             //move to "initialize()" method
             locationName.setText(item.getName());
 
