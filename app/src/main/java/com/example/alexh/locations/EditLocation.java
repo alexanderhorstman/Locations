@@ -58,6 +58,7 @@ public class EditLocation extends FragmentActivity{
         }
         else if(locationType.equals("new location")) {
             usesCurrentLocation = false;
+            setUpMapIfNeeded();
             viewHolder.mapView.setVisibility(View.VISIBLE);
             viewHolder.addressView.setVisibility(View.VISIBLE);
         }
@@ -489,6 +490,9 @@ public class EditLocation extends FragmentActivity{
                             Toast.LENGTH_SHORT).show();
                 }
                 else {
+                    /////////////////////////////////////////////////////////////////////////////
+                    Toast.makeText(this, "test for refresh", Toast.LENGTH_SHORT).show();
+                    /////////////////////////////////////////////////////////////////////////////
                     Address firstAddress = possibleAddresses.get(0);
                     LatLng addressLatLng = new LatLng(firstAddress.getLatitude(), firstAddress.getLongitude());
                     viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(addressLatLng));
@@ -524,14 +528,16 @@ public class EditLocation extends FragmentActivity{
         viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
                 new LatLng(latitude, longitude)));
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-        viewHolder.currentMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
-        currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
-        viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                currentLocationMarker.setPosition(latLng);
-            }
-        });
+        if(usesCurrentLocation) {
+            viewHolder.currentMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
+            currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
+            viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                @Override
+                public void onMapLongClick(LatLng latLng) {
+                    currentLocationMarker.setPosition(latLng);
+                }
+            });
+        }
     }
 
     private void setUpMapIfNeeded() {

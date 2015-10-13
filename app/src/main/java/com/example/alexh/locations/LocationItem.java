@@ -8,7 +8,7 @@ import java.util.List;
 
 public class LocationItem implements Serializable {
     private String name;	//The name of the location.
-    private String address;	//Address of the location.
+    private String address = "";	//Address of the location.
     private double latitude;	//Latitude of the location.
     private double longitude;	//Longitude of the location.
     private List<String> notes = new ArrayList<>();	//New String array that can hold 5 strings.
@@ -114,6 +114,10 @@ public class LocationItem implements Serializable {
         }
         else	//If the array is full.
             System.out.println("You cannot add anymore notes.");
+    }
+
+    public boolean hasAddress() {
+        return !address.equals("");
     }
 
     public boolean hasNotes() {
