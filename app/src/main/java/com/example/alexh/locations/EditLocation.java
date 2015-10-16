@@ -424,6 +424,8 @@ public class EditLocation extends FragmentActivity{
             newLocationItem = new LocationItem(locationName, longitude, latitude);
         }
         else {
+            //add lat and long to item
+            //change item to include lat and long with address
             String address = viewHolder.address.getText().toString();
             newLocationItem = new LocationItem(locationName, address);
         }
@@ -490,9 +492,6 @@ public class EditLocation extends FragmentActivity{
                             Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    /////////////////////////////////////////////////////////////////////////////
-                    Toast.makeText(this, "test for refresh", Toast.LENGTH_SHORT).show();
-                    /////////////////////////////////////////////////////////////////////////////
                     Address firstAddress = possibleAddresses.get(0);
                     LatLng addressLatLng = new LatLng(firstAddress.getLatitude(), firstAddress.getLongitude());
                     viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(addressLatLng));

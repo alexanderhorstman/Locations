@@ -83,7 +83,7 @@ public class ViewLocation extends FragmentActivity {
 
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
-        if (viewHolder.map == null && viewHolder.mapView.getVisibility() == View.VISIBLE) {
+        if (viewHolder.map == null) {
             // Try to obtain the map from the SupportMapFragment.
             viewHolder.map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment))
                     .getMap();
