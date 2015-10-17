@@ -11,7 +11,7 @@ public class LocationItem implements Serializable {
     private String address = "";	//Address of the location.
     private double latitude;	//Latitude of the location.
     private double longitude;	//Longitude of the location.
-    private List<String> notes = new ArrayList<>();	//New String array that can hold 5 strings.
+    private List<String> notes = new ArrayList<String>();	//New String array that can hold 5 strings.
     private int numNotes = 0;	//An int to keep track of how many notes have been added.
 
     /*
@@ -19,15 +19,17 @@ public class LocationItem implements Serializable {
      */
     public LocationItem(){}
 
-    public LocationItem(String name, double longitude, double latitude) {
+    public LocationItem(String name, double latitude, double longitude) {
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
-    public LocationItem(String name, String address) {
+    public LocationItem(String name, String address, double latitude, double longitude) {
         this.name = name;
         this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 	
 	/*
@@ -114,6 +116,10 @@ public class LocationItem implements Serializable {
         }
         else	//If the array is full.
             System.out.println("You cannot add anymore notes.");
+    }
+
+    public void addNotes(List<String> notes) {
+        this.notes = notes;
     }
 
     public boolean hasAddress() {

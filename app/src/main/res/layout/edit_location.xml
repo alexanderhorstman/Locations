@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/addressView"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                 android:id="@+id/mapView"
                 android:visibility="visible">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -114,16 +114,24 @@
                         android:id="@+id/mapHeaderTextEditLocation"
                         style="@style/ContentHeader"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" - Refresh"
+                    <ImageButton
+                        android:layout_width="50dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/refresh_icon"
                         android:onClick="refreshMap"
-                        android:textSize="25sp"
-                        android:layout_marginTop="10dp"
-                        android:textColor="@color/appBlue"/>
+                        android:background="#00000000"
+                        android:layout_toRightOf="@id/mapHeaderTextEditLocation" />
 
-                </LinearLayout>
+                    <ImageButton
+                        android:layout_width="50dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentRight="true"
+                        android:src="@drawable/current_location"
+                        android:background="#00000000"
+                        android:paddingRight="10dp"
+                        android:onClick="useCurrentLocation"/>
+
+                </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"

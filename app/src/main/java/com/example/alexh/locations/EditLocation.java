@@ -28,50 +28,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EditLocation extends FragmentActivity{
 
-    boolean usesCurrentLocation = true;
+    boolean usesCurrentLocation = false;
     Holder viewHolder;
     Marker currentLocationMarker;
-    String locationType;
+    List<String> notesToAdd = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_location);
         viewHolder = new Holder();
-        Intent previousActivity = getIntent();
-        locationType = previousActivity.getStringExtra("location type");
-        if(locationType.equals("current location")) {
-            try {
-                usesCurrentLocation = true;
-                setUpMapIfNeeded();
-                viewHolder.mapView.setVisibility(View.VISIBLE);
-                viewHolder.addressView.setVisibility(View.GONE);
-            }
-            catch (Exception e) {
-                Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
-            }
-
-        }
-        else if(locationType.equals("new location")) {
-            usesCurrentLocation = false;
-            setUpMapIfNeeded();
-            viewHolder.mapView.setVisibility(View.VISIBLE);
-            viewHolder.addressView.setVisibility(View.VISIBLE);
-        }
-        //exit if the location type is not one of the two expected values
-        else {
-            Toast.makeText(this, "Error creating new location.", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        setUpMapIfNeeded();
+        viewHolder.mapView.setVisibility(View.VISIBLE);
+        viewHolder.addressView.setVisibility(View.VISIBLE);
     }
 
     public void addNote(View view) {
-        if(viewHolder.note1Layout.getVisibility() != View.VISIBLE) {
-            //open dialog box
+        if(notesToAdd.size() < 5) {
+            //open dialog
             AlertDialog.Builder dialogBox = new AlertDialog.Builder(this);
             dialogBox.setTitle("New Note");
             final EditText input = new EditText(this);
@@ -95,280 +74,90 @@ public class EditLocation extends FragmentActivity{
             dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    //add note to list
                     if(!input.getText().toString().trim().equals("")) {
-                        //set note text to the dialog box text
-                        viewHolder.note1View.setText(input.getText().toString().trim());
-                        //make note visible
-                        viewHolder.note1Layout.setVisibility(View.VISIBLE);
+                        notesToAdd.add(input.getText().toString().trim());
                     }
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //do nothing
+                    return;
                 }
             });
             dialogBox.show();
-        }
-        else if(viewHolder.note2Layout.getVisibility() != View.VISIBLE) {
-            //open dialog box
-            AlertDialog.Builder dialogBox = new AlertDialog.Builder(this);
-            dialogBox.setTitle("New Note");
-            final EditText input = new EditText(this);
-            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES |
-                    InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-            input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    input.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            InputMethodManager inputMethodManager= (InputMethodManager)
-                                    EditLocation.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
-                        }
-                    });
-                }
-            });
-            input.requestFocus();
-            dialogBox.setView(input);
-            dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if(!input.getText().toString().trim().equals("")) {
-                        //set note text to the dialog box text
-                        viewHolder.note2View.setText(input.getText().toString());
-                        //make note visible
-                        viewHolder.note2Layout.setVisibility(View.VISIBLE);
-                        viewHolder.titleBarLayout.requestFocus();
-                    }
-                }
-            });
-            dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //do nothing
-                }
-            });
-            dialogBox.show();
-        }
-        else if(viewHolder.note3Layout.getVisibility() != View.VISIBLE) {
-            //open dialog box
-            AlertDialog.Builder dialogBox = new AlertDialog.Builder(this);
-            dialogBox.setTitle("New Note");
-            final EditText input = new EditText(this);
-            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES |
-                    InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-            input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    input.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            InputMethodManager inputMethodManager= (InputMethodManager)
-                                    EditLocation.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
-                        }
-                    });
-                }
-            });
-            input.requestFocus();
-            dialogBox.setView(input);
-            dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if(!input.getText().toString().trim().equals("")) {
-                        //set note text to the dialog box text
-                        viewHolder.note3View.setText(input.getText().toString());
-                        //make note visible
-                        viewHolder.note3Layout.setVisibility(View.VISIBLE);
-                        viewHolder.titleBarLayout.requestFocus();
-                    }
+            //make new note visible
+            if(notesToAdd.size() == 1) {
+                viewHolder.note1Layout.setVisibility(View.VISIBLE);
+                viewHolder.note1View.setText(notesToAdd.get(0));
+            }
+            else if(notesToAdd.size() == 2) {
+                viewHolder.note2Layout.setVisibility(View.VISIBLE);
+                viewHolder.note2View.setText(notesToAdd.get(1));
+            }
+            else if(notesToAdd.size() == 3) {
+                viewHolder.note3Layout.setVisibility(View.VISIBLE);
+                viewHolder.note3View.setText(notesToAdd.get(2));
+            }
+            else if(notesToAdd.size() == 4) {
+                viewHolder.note4Layout.setVisibility(View.VISIBLE);
+                viewHolder.note4View.setText(notesToAdd.get(3));
+            }
+            else if(notesToAdd.size() == 5) {
+                viewHolder.note5Layout.setVisibility(View.VISIBLE);
+                viewHolder.note5View.setText(notesToAdd.get(4));
+                viewHolder.noteAddButton.setVisibility(View.GONE);
+            }
 
-                }
-            });
-            dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //do nothing
-                }
-            });
-            dialogBox.show();
-        }
-        else if(viewHolder.note4Layout.getVisibility() != View.VISIBLE) {
-            //open dialog box
-            AlertDialog.Builder dialogBox = new AlertDialog.Builder(this);
-            dialogBox.setTitle("New Note");
-            final EditText input = new EditText(this);
-            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES |
-                    InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-            input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    input.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            InputMethodManager inputMethodManager= (InputMethodManager)
-                                    EditLocation.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
-                        }
-                    });
-                }
-            });
-            input.requestFocus();
-            dialogBox.setView(input);
-            dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if(!input.getText().toString().trim().equals("")) {
-                        //set note text to the dialog box text
-                        viewHolder.note4View.setText(input.getText().toString());
-                        //make note visible
-                        viewHolder.note4Layout.setVisibility(View.VISIBLE);
-                        viewHolder.titleBarLayout.requestFocus();
-                    }
-
-                }
-            });
-            dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //do nothing
-                }
-            });
-            dialogBox.show();
-        }
-        else if(viewHolder.note5Layout.getVisibility() != View.VISIBLE) {
-            //open dialog box
-            AlertDialog.Builder dialogBox = new AlertDialog.Builder(this);
-            dialogBox.setTitle("New Note");
-            final EditText input = new EditText(this);
-            input.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES |
-                    InputType.TYPE_TEXT_FLAG_AUTO_CORRECT | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-            input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    input.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            InputMethodManager inputMethodManager= (InputMethodManager)
-                                    EditLocation.this.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
-                        }
-                    });
-                }
-            });
-            input.requestFocus();
-            dialogBox.setView(input);
-            dialogBox.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if(!input.getText().toString().trim().equals("")) {
-                        //set note text to the dialog box text
-                        viewHolder.note5View.setText(input.getText().toString());
-                        //make note visible
-                        viewHolder.note5Layout.setVisibility(View.VISIBLE);
-                        viewHolder.noteAddButton.setVisibility(View.GONE);
-                        viewHolder.titleBarLayout.requestFocus();
-                    }
-
-                }
-            });
-            dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    //do nothing
-                }
-            });
-            dialogBox.show();
         }
     }
 
     public void deleteNote(View view) {
         int buttonId = view.getId();
-        switch (buttonId) {
-            case R.id.deleteNote1Button:
-                //move the other notes up in the line
-                if(viewHolder.note2Layout.getVisibility() == View.VISIBLE) {
-                    viewHolder.note1View.setText(viewHolder.note2View.getText().toString());
-                    if(viewHolder.note3Layout.getVisibility() == View.VISIBLE) {
-                        viewHolder.note2View.setText(viewHolder.note3View.getText().toString());
-                        if(viewHolder.note4Layout.getVisibility() == View.VISIBLE) {
-                            viewHolder.note3View.setText(viewHolder.note4View.getText().toString());
-                            if(viewHolder.note5Layout.getVisibility() == View.VISIBLE) {
-                                viewHolder.note4View.setText(viewHolder.note5View.getText().toString());
-                                viewHolder.note5Layout.setVisibility(View.GONE);
-                            }
-                            else {
-                                viewHolder.note4Layout.setVisibility(View.GONE);
-                            }
-                        }
-                        else {
-                            viewHolder.note3Layout.setVisibility(View.GONE);
-                        }
-                    }
-                    else {
-                        viewHolder.note2Layout.setVisibility(View.GONE);
-                    }
-                }
-                else {
-                    viewHolder.note1Layout.setVisibility(View.GONE);
-                }
-                break;
-            case R.id.deleteNote2Button:
-                if(viewHolder.note3Layout.getVisibility() == View.VISIBLE) {
-                    viewHolder.note2View.setText(viewHolder.note3View.getText().toString());
-                    if(viewHolder.note4Layout.getVisibility() == View.VISIBLE) {
-                        viewHolder.note3View.setText(viewHolder.note4View.getText().toString());
-                        if(viewHolder.note5Layout.getVisibility() == View.VISIBLE) {
-                            viewHolder.note4View.setText(viewHolder.note5View.getText().toString());
-                            viewHolder.note5Layout.setVisibility(View.GONE);
-                        }
-                        else {
-                            viewHolder.note4Layout.setVisibility(View.GONE);
-                        }
-                    }
-                    else {
-                        viewHolder.note3Layout.setVisibility(View.GONE);
-                    }
-                }
-                else {
-                    viewHolder.note2Layout.setVisibility(View.GONE);
-                }
-                break;
-            case R.id.deleteNote3Button:
-                if(viewHolder.note4Layout.getVisibility() == View.VISIBLE) {
-                    viewHolder.note3View.setText(viewHolder.note4View.getText().toString());
-                    if(viewHolder.note5Layout.getVisibility() == View.VISIBLE) {
-                        viewHolder.note4View.setText(viewHolder.note5View.getText().toString());
-                        viewHolder.note5Layout.setVisibility(View.GONE);
-                    }
-                    else {
-                        viewHolder.note4Layout.setVisibility(View.GONE);
-                    }
-                }
-                else {
-                    viewHolder.note3Layout.setVisibility(View.GONE);
-                }
-                break;
-            case R.id.deleteNote4Button:
-                if(viewHolder.note5Layout.getVisibility() == View.VISIBLE) {
-                    viewHolder.note4View.setText(viewHolder.note5View.getText().toString());
-                    viewHolder.note5Layout.setVisibility(View.GONE);
-                }
-                else {
-                    viewHolder.note4Layout.setVisibility(View.GONE);
-                }
-                break;
-            case R.id.deleteNote5Button:
-                viewHolder.note5Layout.setVisibility(View.GONE);
-                break;
-            default:
-                Toast.makeText(this, "Nothing happened.", Toast.LENGTH_SHORT).show();
+        if(buttonId == R.id.deleteNote1Button) {
+            notesToAdd.remove(0);
+        }
+        else if(buttonId == R.id.deleteNote2Button) {
+            notesToAdd.remove(1);
+        }
+        else if(buttonId == R.id.deleteNote3Button) {
+            notesToAdd.remove(2);
+        }
+        else if(buttonId == R.id.deleteNote4Button) {
+            notesToAdd.remove(3);
+        }
+        else if(buttonId == R.id.deleteNote5Button) {
+            notesToAdd.remove(4);
+        }
+        //hide all of the note views
+        viewHolder.note1View.setVisibility(View.GONE);
+        viewHolder.note2View.setVisibility(View.GONE);
+        viewHolder.note3View.setVisibility(View.GONE);
+        viewHolder.note4View.setVisibility(View.GONE);
+        viewHolder.note5View.setVisibility(View.GONE);
+        //make visible all the ones that are actually needed
+        if(notesToAdd.size() > 0) {
+            viewHolder.note1View.setText(notesToAdd.get(0));
+            viewHolder.note1View.setVisibility(View.VISIBLE);
+        }
+        if(notesToAdd.size() > 1) {
+            viewHolder.note2View.setText(notesToAdd.get(1));
+            viewHolder.note2View.setVisibility(View.VISIBLE);
+        }
+        if(notesToAdd.size() > 2) {
+            viewHolder.note3View.setText(notesToAdd.get(2));
+            viewHolder.note3View.setVisibility(View.VISIBLE);
+        }
+        if(notesToAdd.size() > 3) {
+            viewHolder.note4View.setText(notesToAdd.get(3));
+            viewHolder.note4View.setVisibility(View.VISIBLE);
+        }
+        if(notesToAdd.size() > 4) {
+            viewHolder.note5View.setText(notesToAdd.get(4));
+            viewHolder.note5View.setVisibility(View.VISIBLE);
         }
         viewHolder.noteAddButton.setVisibility(View.VISIBLE);
-
     }
 
     public void finishLocation(View view) {
@@ -379,8 +168,7 @@ public class EditLocation extends FragmentActivity{
             Toast.makeText(this, "The location must have a name.", Toast.LENGTH_SHORT).show();
             return;
         }
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //check for address field if current location is not being used --------------------------review this for lat&long from address
+        //check for address field if current location is not being used
         if(!usesCurrentLocation) {
             Geocoder geocoder = new Geocoder(this);
             List<Address> possibleAddresses;
@@ -407,7 +195,7 @@ public class EditLocation extends FragmentActivity{
                     Address firstAddress = possibleAddresses.get(0);
                     LatLng addressLatLng = new LatLng(firstAddress.getLatitude(), firstAddress.getLongitude());
                     viewHolder.currentMarkerOptions.position(addressLatLng);
-
+                    currentLocationMarker.setPosition(addressLatLng);
                 }
             }
             catch (Exception e) {
@@ -417,34 +205,20 @@ public class EditLocation extends FragmentActivity{
         }
         //create location item
         String locationName = viewHolder.locationName.getText().toString().trim();
+        LatLng latLng = currentLocationMarker.getPosition();
+        double latitude = latLng.latitude;
+        double longitude = latLng.longitude;
         if (usesCurrentLocation) {
-            LatLng latLng = currentLocationMarker.getPosition();
-            double latitude = latLng.latitude;
-            double longitude = latLng.longitude;
-            newLocationItem = new LocationItem(locationName, longitude, latitude);
+            newLocationItem = new LocationItem(locationName, latitude, longitude);
         }
         else {
             //add lat and long to item
             //change item to include lat and long with address
             String address = viewHolder.address.getText().toString();
-            newLocationItem = new LocationItem(locationName, address);
+            newLocationItem = new LocationItem(locationName, address, latitude, longitude);
         }
         //add notes to item if it has notes
-        if(viewHolder.note1Layout.getVisibility() == View.VISIBLE) {
-            newLocationItem.addNote(viewHolder.note1View.getText().toString().trim());
-        }
-        if(viewHolder.note2Layout.getVisibility() == View.VISIBLE) {
-            newLocationItem.addNote(viewHolder.note2View.getText().toString().trim());
-        }
-        if(viewHolder.note3Layout.getVisibility() == View.VISIBLE) {
-            newLocationItem.addNote(viewHolder.note3View.getText().toString().trim());
-        }
-        if(viewHolder.note4Layout.getVisibility() == View.VISIBLE) {
-            newLocationItem.addNote(viewHolder.note4View.getText().toString().trim());
-        }
-        if(viewHolder.note5Layout.getVisibility() == View.VISIBLE) {
-            newLocationItem.addNote(viewHolder.note5View.getText().toString().trim());
-        }
+        newLocationItem.addNotes(notesToAdd);
         //add new location to list
         Globals.locationArray.add(newLocationItem);
         //save new list
@@ -454,28 +228,23 @@ public class EditLocation extends FragmentActivity{
     }
 
     public void refreshMap(View view) {
-        if(locationType.equals("current location")) {
+        if(viewHolder.address.getText().toString().contains("Lat:") && viewHolder.address.getText()
+                .toString().contains("Long:")) {
+            //update with current location
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             double latitude = currentLocation.getLatitude();
             double longitude = currentLocation.getLongitude();
-            viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
-                    new LatLng(latitude, longitude)));
+            viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
             viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
             viewHolder.currentMarkerOptions.position(new LatLng(latitude, longitude));
         }
-        else if(locationType.equals("new location")) {
+        else {
+            usesCurrentLocation = false;
+            //update with address
             Geocoder geocoder = new Geocoder(this);
             List<Address> possibleAddresses;
             String address = viewHolder.address.getText().toString().trim();
-
-            //check to make sure Geocoder is available
-            if(!Geocoder.isPresent()) {
-                Toast.makeText(this, "There is no geocoder backend service available.", Toast.LENGTH_LONG).show();
-            }
-            else {
-                //Toast.makeText(this, "Geocoder is working correctly.", Toast.LENGTH_SHORT).show();
-            }
             //check to make sure there is an address being analyzed
             if(address.equals("")) {
                 Toast.makeText(this, "The location must have an address.", Toast.LENGTH_SHORT).show();
@@ -523,20 +292,10 @@ public class EditLocation extends FragmentActivity{
         Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         double latitude = currentLocation.getLatitude();
         double longitude = currentLocation.getLongitude();
-        viewHolder.map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        viewHolder.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
                 new LatLng(latitude, longitude)));
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-        if(usesCurrentLocation) {
-            viewHolder.currentMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
-            currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
-            viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                @Override
-                public void onMapLongClick(LatLng latLng) {
-                    currentLocationMarker.setPosition(latLng);
-                }
-            });
-        }
     }
 
     private void setUpMapIfNeeded() {
@@ -550,6 +309,25 @@ public class EditLocation extends FragmentActivity{
                 setUpMap();
             }
         }
+    }
+
+    public void useCurrentLocation(View view) {
+        usesCurrentLocation = true;
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double latitude = currentLocation.getLatitude();
+        double longitude = currentLocation.getLongitude();
+        viewHolder.currentMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
+        currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
+        viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                currentLocationMarker.setPosition(latLng);
+            }
+        });
+        viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+        viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
+        viewHolder.address.setText("Lat: " + latitude + " Long: " + longitude);
     }
 
     private class Holder {
