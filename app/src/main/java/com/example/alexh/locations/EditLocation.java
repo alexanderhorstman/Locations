@@ -78,6 +78,28 @@ public class EditLocation extends FragmentActivity{
                     if(!input.getText().toString().trim().equals("")) {
                         notesToAdd.add(input.getText().toString().trim());
                     }
+                    //make new note visible
+                    if(notesToAdd.size() == 1) {
+                        viewHolder.note1Layout.setVisibility(View.VISIBLE);
+                        viewHolder.note1View.setText(notesToAdd.get(0));
+                    }
+                    else if(notesToAdd.size() == 2) {
+                        viewHolder.note2Layout.setVisibility(View.VISIBLE);
+                        viewHolder.note2View.setText(notesToAdd.get(1));
+                    }
+                    else if(notesToAdd.size() == 3) {
+                        viewHolder.note3Layout.setVisibility(View.VISIBLE);
+                        viewHolder.note3View.setText(notesToAdd.get(2));
+                    }
+                    else if(notesToAdd.size() == 4) {
+                        viewHolder.note4Layout.setVisibility(View.VISIBLE);
+                        viewHolder.note4View.setText(notesToAdd.get(3));
+                    }
+                    else if(notesToAdd.size() == 5) {
+                        viewHolder.note5Layout.setVisibility(View.VISIBLE);
+                        viewHolder.note5View.setText(notesToAdd.get(4));
+                        viewHolder.noteAddButton.setVisibility(View.GONE);
+                    }
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -87,28 +109,7 @@ public class EditLocation extends FragmentActivity{
                 }
             });
             dialogBox.show();
-            //make new note visible
-            if(notesToAdd.size() == 1) {
-                viewHolder.note1Layout.setVisibility(View.VISIBLE);
-                viewHolder.note1View.setText(notesToAdd.get(0));
-            }
-            else if(notesToAdd.size() == 2) {
-                viewHolder.note2Layout.setVisibility(View.VISIBLE);
-                viewHolder.note2View.setText(notesToAdd.get(1));
-            }
-            else if(notesToAdd.size() == 3) {
-                viewHolder.note3Layout.setVisibility(View.VISIBLE);
-                viewHolder.note3View.setText(notesToAdd.get(2));
-            }
-            else if(notesToAdd.size() == 4) {
-                viewHolder.note4Layout.setVisibility(View.VISIBLE);
-                viewHolder.note4View.setText(notesToAdd.get(3));
-            }
-            else if(notesToAdd.size() == 5) {
-                viewHolder.note5Layout.setVisibility(View.VISIBLE);
-                viewHolder.note5View.setText(notesToAdd.get(4));
-                viewHolder.noteAddButton.setVisibility(View.GONE);
-            }
+
 
         }
     }
@@ -265,8 +266,14 @@ public class EditLocation extends FragmentActivity{
                     LatLng addressLatLng = new LatLng(firstAddress.getLatitude(), firstAddress.getLongitude());
                     viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(addressLatLng));
                     viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-                    viewHolder.currentMarkerOptions = new MarkerOptions().position(addressLatLng).title("My Location");
-                    currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
+
+                    if(viewHolder.currentMarkerOptions == null) {
+                        viewHolder.currentMarkerOptions = new MarkerOptions().position(addressLatLng).title("My Location");
+                        currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
+                    }
+                    else {
+                        viewHolder.currentMarkerOptions.position(addressLatLng);
+                    }
                 }
             }
             catch (Exception e) {
@@ -315,10 +322,16 @@ public class EditLocation extends FragmentActivity{
         usesCurrentLocation = true;
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        LatLng addressLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         double latitude = currentLocation.getLatitude();
         double longitude = currentLocation.getLongitude();
-        viewHolder.currentMarkerOptions = new MarkerOptions().position(new LatLng(latitude, longitude)).title("My Location");
-        currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
+        if(viewHolder.currentMarkerOptions == null) {
+            viewHolder.currentMarkerOptions = new MarkerOptions().position(addressLatLng).title("My Location");
+            currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
+        }
+        else {
+            viewHolder.currentMarkerOptions.position(addressLatLng);
+        }
         viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
