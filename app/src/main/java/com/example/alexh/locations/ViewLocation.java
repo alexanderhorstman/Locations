@@ -22,6 +22,7 @@ public class ViewLocation extends FragmentActivity {
 
     private int index;
     private Holder viewHolder;
+    private LocationItem item;
 
     //fired when the back button is pressed
     @Override
@@ -36,10 +37,14 @@ public class ViewLocation extends FragmentActivity {
         setContentView(R.layout.view_location);
         Intent intent = getIntent();
         index = intent.getIntExtra("position", 0);
+        item = Globals.locationArray.get(index);
         viewHolder = new Holder(index);
+        //move to initialize() method
+        if(item.getAddress().equals("")) {
+            viewHolder.addressView.setVisibility(View.GONE);
+        }
         setUpMapIfNeeded();
-        TextView locationName = (TextView) findViewById(R.id.locationNameViewLocation);
-        locationName.setText(Globals.locationArray.get(index).getName());
+        viewHolder.locationName.setText(item.getName());
     }
 
     public void deleteLocation(View view) {
@@ -69,7 +74,6 @@ public class ViewLocation extends FragmentActivity {
 
     //set marker location to current location
     private void setUpMap() {
-        LocationItem item = Globals.locationArray.get(index);
         double latitude = item.getLatitude();
         double longitude = item.getLongitude();
         viewHolder.map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -109,7 +113,6 @@ public class ViewLocation extends FragmentActivity {
         GoogleMap map;
 
         public Holder(int itemIndex) {
-            LocationItem item = Globals.locationArray.get(itemIndex);
             locationName = (TextView) findViewById(R.id.locationNameViewLocation);
             addressView = (LinearLayout) findViewById(R.id.addressView);
             addressText = (TextView) findViewById(R.id.locationAddressViewLocation);
@@ -120,10 +123,9 @@ public class ViewLocation extends FragmentActivity {
             note3 = (TextView) findViewById(R.id.note3TextViewLocation);
             note4 = (TextView) findViewById(R.id.note4TextViewLocation);
             note5 = (TextView) findViewById(R.id.note5TextViewLocation);
-            //move to "initialize()" method
-            locationName.setText(item.getName());
 
             //move to "initialize()" method
+            /*
             if(item.getAddress() == null) {
                 addressView.setVisibility(View.GONE);
                 mapView.setVisibility(View.VISIBLE);
@@ -133,6 +135,7 @@ public class ViewLocation extends FragmentActivity {
                 addressText.setText(item.getAddress());
                 mapView.setVisibility(View.VISIBLE);
             }
+            */
             if(item.hasNotes()) {
                 notesView.setVisibility(View.VISIBLE);
                 List<String> notes = item.getNotes();

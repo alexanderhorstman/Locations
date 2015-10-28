@@ -71,12 +71,6 @@ public class LocationItem implements Serializable {
         return notes;
     }
 
-    /*
-    public Calendar getTimeAdded() {
-        return timeAdded;
-    }
-    */
-
 	/*
 	 * Setters:
 	 * 	setName()
@@ -119,7 +113,14 @@ public class LocationItem implements Serializable {
     }
 
     public void addNotes(List<String> notes) {
-        this.notes = notes;
+        if(notes.size() > 5) {
+            throw new IllegalArgumentException();
+        }
+        else {
+            this.notes = notes;
+            numNotes = notes.size();
+        }
+
     }
 
     public boolean hasAddress() {
@@ -127,6 +128,7 @@ public class LocationItem implements Serializable {
     }
 
     public boolean hasNotes() {
+        numNotes = notes.size();
         return (numNotes > 0);
     }
 

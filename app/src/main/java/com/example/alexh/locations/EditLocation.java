@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ObjectOutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,6 +101,7 @@ public class EditLocation extends FragmentActivity{
                         viewHolder.note5View.setText(notesToAdd.get(4));
                         viewHolder.noteAddButton.setVisibility(View.GONE);
                     }
+                    viewHolder.titleBarLayout.requestFocus();
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -132,31 +134,32 @@ public class EditLocation extends FragmentActivity{
             notesToAdd.remove(4);
         }
         //hide all of the note views
-        viewHolder.note1View.setVisibility(View.GONE);
-        viewHolder.note2View.setVisibility(View.GONE);
-        viewHolder.note3View.setVisibility(View.GONE);
-        viewHolder.note4View.setVisibility(View.GONE);
-        viewHolder.note5View.setVisibility(View.GONE);
+        viewHolder.note1Layout.setVisibility(View.GONE);
+        viewHolder.note2Layout.setVisibility(View.GONE);
+        viewHolder.note3Layout.setVisibility(View.GONE);
+        viewHolder.note4Layout.setVisibility(View.GONE);
+        viewHolder.note5Layout.setVisibility(View.GONE);
         //make visible all the ones that are actually needed
         if(notesToAdd.size() > 0) {
             viewHolder.note1View.setText(notesToAdd.get(0));
-            viewHolder.note1View.setVisibility(View.VISIBLE);
+            viewHolder.note1Layout.setVisibility(View.VISIBLE);
         }
         if(notesToAdd.size() > 1) {
             viewHolder.note2View.setText(notesToAdd.get(1));
-            viewHolder.note2View.setVisibility(View.VISIBLE);
+            viewHolder.note2Layout.setVisibility(View.VISIBLE);
         }
         if(notesToAdd.size() > 2) {
             viewHolder.note3View.setText(notesToAdd.get(2));
-            viewHolder.note3View.setVisibility(View.VISIBLE);
+            viewHolder.note3Layout.setVisibility(View.VISIBLE);
         }
         if(notesToAdd.size() > 3) {
             viewHolder.note4View.setText(notesToAdd.get(3));
-            viewHolder.note4View.setVisibility(View.VISIBLE);
+            viewHolder.note4Layout.setVisibility(View.VISIBLE);
         }
+        //should never execute, but included just in case
         if(notesToAdd.size() > 4) {
             viewHolder.note5View.setText(notesToAdd.get(4));
-            viewHolder.note5View.setVisibility(View.VISIBLE);
+            viewHolder.note5Layout.setVisibility(View.VISIBLE);
         }
         viewHolder.noteAddButton.setVisibility(View.VISIBLE);
     }
@@ -179,7 +182,7 @@ public class EditLocation extends FragmentActivity{
                 Toast.makeText(this, "There is no geocoder backend service available.", Toast.LENGTH_LONG).show();
             }
             else {
-                Toast.makeText(this, "Geocoder is working correctly.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Geocoder is working correctly.", Toast.LENGTH_SHORT).show();
             }
             if(address.equals("")) {
                 Toast.makeText(this, "The location must have an address.", Toast.LENGTH_SHORT).show();
@@ -200,7 +203,7 @@ public class EditLocation extends FragmentActivity{
                 }
             }
             catch (Exception e) {
-                e.printStackTrace();
+                Toast.makeText(this, "Something is broken.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -297,12 +300,18 @@ public class EditLocation extends FragmentActivity{
     private void setUpMap() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double latitude = currentLocation.getLatitude();
-        double longitude = currentLocation.getLongitude();
-        viewHolder.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
-                new LatLng(latitude, longitude)));
-        viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
+        try {
+            double latitude = currentLocation.getLatitude();
+            double longitude = currentLocation.getLongitude();
+            viewHolder.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
+                    new LatLng(latitude, longitude)));
+            viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
+        }
+        catch(NullPointerException e) {
+            Toast.makeText(this, "Unable to get current location. Make sure Location service is turned on",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private void setUpMapIfNeeded() {
@@ -322,7 +331,7 @@ public class EditLocation extends FragmentActivity{
         usesCurrentLocation = true;
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        LatLng addressLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        final LatLng addressLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         double latitude = currentLocation.getLatitude();
         double longitude = currentLocation.getLongitude();
         if(viewHolder.currentMarkerOptions == null) {
@@ -335,12 +344,19 @@ public class EditLocation extends FragmentActivity{
         viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                DecimalFormat latLngFormat = new DecimalFormat("#.000");
                 currentLocationMarker.setPosition(latLng);
+                String latitude = latLngFormat.format(latLng.latitude);
+                String longitude = latLngFormat.format(latLng.longitude);
+                viewHolder.address.setText("Lat: " + latitude + " Long: " + longitude);
             }
         });
         viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-        viewHolder.address.setText("Lat: " + latitude + " Long: " + longitude);
+        DecimalFormat latLngFormat = new DecimalFormat("#.000");
+        String lat = latLngFormat.format(latitude);
+        String lon = latLngFormat.format(longitude);
+        viewHolder.address.setText("Lat: " + lat + " Long: " + lon);
     }
 
     private class Holder {
