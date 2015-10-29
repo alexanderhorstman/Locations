@@ -49,6 +49,7 @@ class ListViewAdapter extends ArrayAdapter<String> {
         String selectedItem = getItem(position);
         //sets the text of the item from getItem(int)
         viewHolder.textView.setText(selectedItem);
+        /*
         viewHolder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,6 +61,7 @@ class ListViewAdapter extends ArrayAdapter<String> {
                 }
             }
         });
+        */
         viewHolder.viewLocationImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
