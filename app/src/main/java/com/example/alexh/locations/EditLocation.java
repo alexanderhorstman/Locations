@@ -1,5 +1,6 @@
 package com.example.alexh.locations;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -19,11 +20,14 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -232,7 +236,10 @@ public class EditLocation extends FragmentActivity{
     public void refreshMap(View view) {
         if(viewHolder.address.getText().toString().contains("Lat:") && viewHolder.address.getText()
                 .toString().contains("Long:")) {
+            //move camera to center on the marker if there is one
+            viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(currentLocationMarker.getPosition()));
             //update with current location
+            /*
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             double latitude = currentLocation.getLatitude();
@@ -241,6 +248,7 @@ public class EditLocation extends FragmentActivity{
             viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
             viewHolder.currentMarkerOptions.position(new LatLng(latitude, longitude));
             currentLocationMarker.setPosition(new LatLng(latitude, longitude));
+            */
         }
         else {
             usesCurrentLocation = false;
@@ -307,6 +315,31 @@ public class EditLocation extends FragmentActivity{
             viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
                     new LatLng(latitude, longitude)));
             viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(12));
+            viewHolder.transparentImage.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    int action = event.getAction();
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN:
+                            // Disallow ScrollView to intercept touch events.
+                            viewHolder.mainScrollView.requestDisallowInterceptTouchEvent(true);
+                            // Disable touch on transparent view
+                            return false;
+
+                        case MotionEvent.ACTION_UP:
+                            // Allow ScrollView to intercept touch events.
+                            viewHolder.mainScrollView.requestDisallowInterceptTouchEvent(false);
+                            return true;
+
+                        case MotionEvent.ACTION_MOVE:
+                            viewHolder.mainScrollView.requestDisallowInterceptTouchEvent(true);
+                            return false;
+
+                        default:
+                            return true;
+                    }
+                }
+            });
         }
         catch(NullPointerException e) {
             Toast.makeText(this, "Unable to get current location. Make sure Location service is turned on",
@@ -379,6 +412,8 @@ public class EditLocation extends FragmentActivity{
         RelativeLayout note4Layout;
         RelativeLayout note5Layout;
         MarkerOptions currentMarkerOptions;
+        ImageView transparentImage;
+        ScrollView mainScrollView;
 
         public Holder() {
             //initialize all of the views
@@ -398,6 +433,8 @@ public class EditLocation extends FragmentActivity{
             note4Layout = (RelativeLayout) findViewById(R.id.note4Layout);
             note5Layout = (RelativeLayout) findViewById(R.id.note5Layout);
             titleBarLayout = (RelativeLayout) findViewById(R.id.titleBarEditLocation);
+            transparentImage = (ImageView) findViewById(R.id.transparent_image);
+            mainScrollView = (ScrollView) findViewById(R.id.mainLocationInfo);
         }
     }
 }
