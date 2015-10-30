@@ -38,10 +38,13 @@ public class ViewLocation extends FragmentActivity {
         Intent intent = getIntent();
         index = intent.getIntExtra("position", 0);
         item = Globals.locationArray.get(index);
-        viewHolder = new Holder(index);
+        viewHolder = new Holder();
         //move to initialize() method
         if(item.getAddress().equals("")) {
             viewHolder.addressView.setVisibility(View.GONE);
+        }
+        else {
+            viewHolder.addressText.setText(item.getAddress());
         }
         setUpMapIfNeeded();
         viewHolder.locationName.setText(item.getName());
@@ -76,7 +79,7 @@ public class ViewLocation extends FragmentActivity {
     private void setUpMap() {
         double latitude = item.getLatitude();
         double longitude = item.getLongitude();
-        viewHolder.map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        viewHolder.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
                 new LatLng(latitude, longitude)));
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
@@ -112,7 +115,7 @@ public class ViewLocation extends FragmentActivity {
         TextView note5;
         GoogleMap map;
 
-        public Holder(int itemIndex) {
+        public Holder() {
             locationName = (TextView) findViewById(R.id.locationNameViewLocation);
             addressView = (LinearLayout) findViewById(R.id.addressView);
             addressText = (TextView) findViewById(R.id.locationAddressViewLocation);

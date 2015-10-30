@@ -242,6 +242,7 @@ public class EditLocation extends FragmentActivity{
             viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
             viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
             viewHolder.currentMarkerOptions.position(new LatLng(latitude, longitude));
+            currentLocationMarker.setPosition(new LatLng(latitude, longitude));
         }
         else {
             usesCurrentLocation = false;
@@ -276,6 +277,7 @@ public class EditLocation extends FragmentActivity{
                     }
                     else {
                         viewHolder.currentMarkerOptions.position(addressLatLng);
+                        currentLocationMarker.setPosition(addressLatLng);
                     }
                 }
             }
@@ -306,7 +308,7 @@ public class EditLocation extends FragmentActivity{
             viewHolder.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(
                     new LatLng(latitude, longitude)));
-            viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
+            viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(12));
         }
         catch(NullPointerException e) {
             Toast.makeText(this, "Unable to get current location. Make sure Location service is turned on",
@@ -340,6 +342,7 @@ public class EditLocation extends FragmentActivity{
         }
         else {
             viewHolder.currentMarkerOptions.position(addressLatLng);
+            currentLocationMarker.setPosition(addressLatLng);
         }
         viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
@@ -351,7 +354,7 @@ public class EditLocation extends FragmentActivity{
                 viewHolder.address.setText("Lat: " + latitude + " Long: " + longitude);
             }
         });
-        viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
+        viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(addressLatLng));
         viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
         DecimalFormat latLngFormat = new DecimalFormat("#.000");
         String lat = latLngFormat.format(latitude);
