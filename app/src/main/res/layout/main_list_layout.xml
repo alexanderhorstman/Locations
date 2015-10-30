@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:descendantFocusability="blocksDescendants">
+    android:id="@+id/mainListLayout">
+    <!--
+    android:descendantFocusability="blocksDescendants"
+    -->
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,42 +36,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_marginBottom="5dp"
         android:layout_below="@id/listText"
         android:id="@+id/secondaryButtons"
-        android:visibility="gone"
+        android:visibility="visible"
         android:paddingTop="15dp">
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="See On Map"
-            android:padding="20dp"
-            android:textColor="#ffffffff"
+            android:layout_height="0dp"
+            android:text="Route to Location"
+            android:paddingLeft="30dp"
+            android:paddingBottom="10dp"
+            android:id="@+id/routeToLocationButton"
+            android:textColor="@color/appBlue"
             android:textSize="15sp"
-            android:background="@drawable/button1"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Route To"
-            android:padding="20dp"
-            android:textColor="#ffffffff"
-            android:textSize="15sp"
-            android:background="@drawable/button1"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="More Info"
-            android:padding="20dp"
-            android:textColor="#ffffffff"
-            android:textSize="15sp"
-            android:background="@drawable/button1"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
         </LinearLayout>
 

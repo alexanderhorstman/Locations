@@ -1,10 +1,15 @@
 package com.example.alexh.locations;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,11 +57,27 @@ public class ViewLocation extends FragmentActivity {
 
     public void deleteLocation(View view) {
         //get verification using a dialog box
-        //delete the item if positive button is pressed
-        //if negative button is pressed do nothing
-        Globals.locationArray.remove(index);
-        saveLocationsList();
-        finish();
+        AlertDialog.Builder dialogBox = new AlertDialog.Builder(this);
+        dialogBox.setTitle("Confirmation");
+        final TextView text = new TextView(this);
+        text.setText("Do you want to delete the location \"" + item.getName() + "\"?");
+        text.setPadding(15, 0, 0, 0);
+        text.setTextSize(15);
+        dialogBox.setView(text);
+        dialogBox.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Globals.locationArray.remove(index);
+                saveLocationsList();
+                finish();
+            }
+        });
+        dialogBox.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        dialogBox.show();
     }
 
     public void returnToMain(View view) {

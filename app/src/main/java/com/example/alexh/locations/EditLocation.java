@@ -111,8 +111,6 @@ public class EditLocation extends FragmentActivity{
                 }
             });
             dialogBox.show();
-
-
         }
     }
 

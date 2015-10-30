@@ -3,6 +3,7 @@ package com.example.alexh.locations;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class MainActivity extends Activity {
@@ -22,6 +25,7 @@ public class MainActivity extends Activity {
     ListViewAdapter adapter;
     ListView listView;
     Context context;
+    LocationItem selectedItem;
 
     //fires when the app returns to this activity
     @Override
@@ -45,14 +49,7 @@ public class MainActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LinearLayout secondaryButtons = (LinearLayout) findViewById(R.id.secondaryButtons);
-                Globals.locationArray.get(position).toggleSelected();
-                if(Globals.locationArray.get(position).isSelected()) {
-                    secondaryButtons.setVisibility(View.VISIBLE);
-                }
-                else {
-                    secondaryButtons.setVisibility(View.GONE);
-                }
+                selectedItem = Globals.locationArray.get(position);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -125,6 +122,35 @@ public class MainActivity extends Activity {
             }
         }
         catch(Exception f){}
+    }
+
+    //launch intent to route to location on Google Maps
+    public void routeToLocation(View view) {
+        /*
+        LocationItem item = selectedItem;
+        String locationName = item.getName();
+        double latitude = item.getLatitude();
+        double longitude = item.getLongitude();
+        String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?daddr=%f,%f (%s)&mode=driving",
+                 latitude, longitude, locationName);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+        startActivity(intent);
+        */
+    }
+
+    //launch intent to view locaiton using Google Maps
+    public void viewOnMap(View view) {
+        /*
+        LocationItem item = selectedItem;
+        String locationName = item.getName();
+        double latitude = item.getLatitude();
+        double longitude = item.getLongitude();
+        String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?(%s)", locationName);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+        startActivity(intent);
+        */
     }
 
     //updates the adapter with the newest version of the global list
