@@ -1,70 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Send to"
-        style="@style/ContentHeader"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#ffff9436"/>
-
-    <EditText
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/appBlue"
-        android:textSize="20sp"
-        android:id="@+id/sendToEmailShareLocation"
-        android:inputType="textEmailAddress" />
+        android:orientation="vertical"
+        android:id="@+id/location_info">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Location Name"
-        style="@style/ContentHeader"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send to"
+            style="@style/ContentHeader"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#ffff9436"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#ffff9436"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/locationNameShareLocation"
-        android:textColor="@color/appBlue"
-        android:text="Location"
-        android:textSize="20sp"
-        android:paddingLeft="15dp"
-        android:paddingTop="5dp"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/appBlue"
+            android:textSize="20sp"
+            android:id="@+id/sendToEmailShareLocation"
+            android:inputType="textEmailAddress" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Location"
-        style="@style/ContentHeader"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location Name"
+            style="@style/ContentHeader"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/appOrange"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#ffff9436"/>
 
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:id="@+id/mapFragmentShareLocation"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/locationNameShareLocation"
+            android:textColor="@color/appBlue"
+            android:text="Location"
+            android:textSize="20sp"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="5dp">
+        android:orientation="vertical"
+        android:layout_below="@id/location_info">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            style="@style/ContentHeader"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/appOrange"/>
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:id="@+id/mapFragmentShareLocation"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:layout_width="wrap_content"
@@ -86,4 +103,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

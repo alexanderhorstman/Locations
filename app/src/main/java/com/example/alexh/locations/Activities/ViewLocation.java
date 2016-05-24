@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -37,6 +36,7 @@ public class ViewLocation extends AppCompatActivity {
     private Holder viewHolder;
     private LocationItem item;
     private LocationArray locationArray;
+    private Context context;
 
     //fired when the back button is pressed
     @Override
@@ -50,6 +50,7 @@ public class ViewLocation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_location);
         setAppBarColor();
+        context = getBaseContext();
         Intent intent = getIntent();
         index = intent.getIntExtra("position", 0);
         locationArray = ListManager.getManager(this).getMyLocations();
@@ -98,6 +99,9 @@ public class ViewLocation extends AppCompatActivity {
         }
         else if(id == R.id.share_location_settings) {
             //start share location activity
+            Intent intent = new Intent(context, ShareLocation.class);
+            intent.putExtra("item", this.item);
+            startActivity(intent);
             return true;
         }
         else if(id == R.id.delete_location_settings) {
@@ -203,18 +207,6 @@ public class ViewLocation extends AppCompatActivity {
             note4 = (TextView) findViewById(R.id.note4TextViewLocation);
             note5 = (TextView) findViewById(R.id.note5TextViewLocation);
 
-            //move to "initialize()" method
-            /*
-            if(item.getAddress() == null) {
-                addressView.setVisibility(View.GONE);
-                mapView.setVisibility(View.VISIBLE);
-            }
-            else {
-                addressView.setVisibility(View.VISIBLE);
-                addressText.setText(item.getAddress());
-                mapView.setVisibility(View.VISIBLE);
-            }
-            */
             if(item.hasNotes()) {
                 notesView.setVisibility(View.VISIBLE);
                 List<String> notes = item.getNotes();

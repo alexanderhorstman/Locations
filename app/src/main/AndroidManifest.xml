@@ -39,6 +39,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".Activities.UserLogin"
             android:screenOrientation="portrait"/>
+        <activity android:name=".Activities.ShareLocation"
+            android:screenOrientation="portrait"/>
 
     </application>
 

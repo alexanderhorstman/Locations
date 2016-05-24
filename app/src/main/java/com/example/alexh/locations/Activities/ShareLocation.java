@@ -1,8 +1,13 @@
 package com.example.alexh.locations.Activities;
 
+import android.support.v4.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -18,6 +23,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ShareLocation extends AppCompatActivity {
 
     Holder viewHolder;
@@ -26,8 +34,14 @@ public class ShareLocation extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.share_location);
+        Firebase.setAndroidContext(this);
         viewHolder = new Holder();
+        setAppBarColor();
+        Intent intent = getIntent();
+        itemToShare = (LocationItem) intent.getSerializableExtra("item");
         setUpMapIfNeeded();
+        viewHolder.locationName.setText(itemToShare.getName());
     }
 
     public void cancelShare(View view) {
@@ -42,9 +56,13 @@ public class ShareLocation extends AppCompatActivity {
         SharedLocation locationToSend = new SharedLocation(myEmail, itemToShare);
         //get firebase reference
         FirebaseManager firebaseManager = FirebaseManager.getManager();
-        Firebase ref = firebaseManager.getReference("")
+        Firebase ref = firebaseManager.getReference("sharedLocations/" + viewHolder.sendToEmail.getText().toString() + "/");
         //write to firebase
+        Map<String, Object> shared = new HashMap<>();
+        shared.put(viewHolder.sendToEmail.getText().toString(), locationToSend);
+        ref.push().setValue(shared);
     }
+
 
     private void setUpMap() {
         double latitude = itemToShare.getLatitude();
@@ -62,13 +80,23 @@ public class ShareLocation extends AppCompatActivity {
         // Do a null check to confirm that we have not already instantiated the map.
         if (viewHolder.map == null) {
             // Try to obtain the map from the SupportMapFragment.
-            viewHolder.map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapFragment))
-                    .getMap();
+            FragmentManager support = getSupportFragmentManager();
+            SupportMapFragment frag = (SupportMapFragment) support.findFragmentById(R.id.mapFragmentShareLocation);
+            viewHolder.map = frag.getMap();
             // Check if we were successful in obtaining the map.
             if (viewHolder.map != null) {
                 setUpMap();
             }
         }
+    }
+
+
+    private void setAppBarColor() {
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        getSupportActionBar().setTitle("Share Location");
     }
 
 

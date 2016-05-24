@@ -1,6 +1,8 @@
 package com.example.alexh.locations.Data;
 
-public class SharedLocation extends LocationItem {
+import java.io.Serializable;
+
+public class SharedLocation extends LocationItem implements Serializable{
 
     String sender;
 
