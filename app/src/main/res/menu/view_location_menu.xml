@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/route_location_settings"
+        android:title="Route To"
+        android:orderInCategory="50"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/edit_location_settings"
+        android:title="Edit"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/share_location_settings"
+        android:title="Share"
+        android:orderInCategory="200"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/delete_location_settings"
+        android:title="Delete"
+        android:orderInCategory="300"
+        app:showAsAction="never" />
+
+</menu>

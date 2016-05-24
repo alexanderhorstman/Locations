@@ -1,6 +1,8 @@
-package com.example.alexh.locations;
+package com.example.alexh.locations.Activities;
 
-import com.google.android.gms.maps.CameraUpdate;
+import com.example.alexh.locations.Data.LocationItem;
+import com.example.alexh.locations.Managers.ListManager;
+import com.example.alexh.locations.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -8,20 +10,29 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,21 +47,47 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditLocation extends FragmentActivity{
+public class CreateLocation extends AppCompatActivity{
 
     boolean usesCurrentLocation = false;
     Holder viewHolder;
     Marker currentLocationMarker;
     List<String> notesToAdd = new ArrayList<>();
+    ListManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edit_location);
+        setContentView(R.layout.create_location);
+        setAppBarColor();
+        manager = ListManager.getManager(this);
         viewHolder = new Holder();
         setUpMapIfNeeded();
         viewHolder.mapView.setVisibility(View.VISIBLE);
         viewHolder.addressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.create_location_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if(id == R.id.finish_location) {
+            finishLocation();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void addNote(View view) {
@@ -68,7 +105,7 @@ public class EditLocation extends FragmentActivity{
                         @Override
                         public void run() {
                             InputMethodManager inputMethodManager= (InputMethodManager)
-                                    EditLocation.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    CreateLocation.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                             inputMethodManager.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT);
                         }
                     });
@@ -166,7 +203,7 @@ public class EditLocation extends FragmentActivity{
         viewHolder.noteAddButton.setVisibility(View.VISIBLE);
     }
 
-    public void finishLocation(View view) {
+    public void finishLocation() {
         LocationItem newLocationItem;
         //check to make sure all fields are filled in
         //check for name field
@@ -206,6 +243,7 @@ public class EditLocation extends FragmentActivity{
             }
             catch (Exception e) {
                 Toast.makeText(this, "Something is broken.", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
                 return;
             }
         }
@@ -226,9 +264,9 @@ public class EditLocation extends FragmentActivity{
         //add notes to item if it has notes
         newLocationItem.addNotes(notesToAdd);
         //add new location to list
-        Globals.locationArray.add(newLocationItem);
+        manager.getMyLocations().add(newLocationItem);
         //save new list
-        saveLocationsList();
+        manager.saveMyLocations();
         //return to main activity
         finish();
     }
@@ -293,22 +331,23 @@ public class EditLocation extends FragmentActivity{
         }
     }
 
-    //used to save the list to file
-    public void saveLocationsList() {
-        //opens the list file and writes the list to it without append
-        try{ObjectOutputStream listOutput =
-                new ObjectOutputStream(openFileOutput(Globals.saveFileName, Context.MODE_PRIVATE));
-            listOutput.writeObject(Globals.locationArray);
-            listOutput.close();
-        }
-        catch(Exception e){e.printStackTrace();}
-    }
-
     //set marker location to current location
     private void setUpMap() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        int fineLocationCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int coarseLocationCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        if(fineLocationCheck == PackageManager.PERMISSION_DENIED && coarseLocationCheck == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 12);
+        }
+        else if(fineLocationCheck == PackageManager.PERMISSION_GRANTED && coarseLocationCheck == PackageManager.PERMISSION_GRANTED) {
+            setUpMapWithCurrentLocation();
+        }
+    }
+
+    private void setUpMapWithCurrentLocation() {
         try {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             double latitude = currentLocation.getLatitude();
             double longitude = currentLocation.getLongitude();
             viewHolder.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -341,9 +380,50 @@ public class EditLocation extends FragmentActivity{
                 }
             });
         }
-        catch(NullPointerException e) {
-            Toast.makeText(this, "Unable to get current location. Make sure Location service is turned on",
-                    Toast.LENGTH_LONG).show();
+        catch (SecurityException e) {
+            Toast.makeText(this, "Could not use current location. " +
+                    "Please use an address to make a new location.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch(requestCode) {
+            case 12: {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setUpMapWithCurrentLocation();
+                }
+                else {
+                    Toast.makeText(getBaseContext(), "Could not use current location. " +
+                            "Please use an address to make a new location.", Toast.LENGTH_LONG).show();
+                    viewHolder.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                    viewHolder.transparentImage.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            int action = event.getAction();
+                            switch (action) {
+                                case MotionEvent.ACTION_DOWN:
+                                    // Disallow ScrollView to intercept touch events.
+                                    viewHolder.mainScrollView.requestDisallowInterceptTouchEvent(true);
+                                    // Disable touch on transparent view
+                                    return false;
+
+                                case MotionEvent.ACTION_UP:
+                                    // Allow ScrollView to intercept touch events.
+                                    viewHolder.mainScrollView.requestDisallowInterceptTouchEvent(false);
+                                    return true;
+
+                                case MotionEvent.ACTION_MOVE:
+                                    viewHolder.mainScrollView.requestDisallowInterceptTouchEvent(true);
+                                    return false;
+
+                                default:
+                                    return true;
+                            }
+                        }
+                    });
+                }
+            }
         }
     }
 
@@ -360,37 +440,52 @@ public class EditLocation extends FragmentActivity{
         }
     }
 
+    private void setAppBarColor() {
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        getSupportActionBar().setTitle("Create Location");
+    }
+
     public void useCurrentLocation(View view) {
         usesCurrentLocation = true;
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        final LatLng addressLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        double latitude = currentLocation.getLatitude();
-        double longitude = currentLocation.getLongitude();
-        if(viewHolder.currentMarkerOptions == null) {
-            viewHolder.currentMarkerOptions = new MarkerOptions().position(addressLatLng).title("My Location");
-            currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
-        }
-        else {
-            viewHolder.currentMarkerOptions.position(addressLatLng);
-            currentLocationMarker.setPosition(addressLatLng);
-        }
-        viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                DecimalFormat latLngFormat = new DecimalFormat("#.000");
-                currentLocationMarker.setPosition(latLng);
-                String latitude = latLngFormat.format(latLng.latitude);
-                String longitude = latLngFormat.format(latLng.longitude);
-                viewHolder.address.setText("Lat: " + latitude + " Long: " + longitude);
+        Location currentLocation;
+        try {
+            currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            final LatLng addressLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            double latitude = currentLocation.getLatitude();
+            double longitude = currentLocation.getLongitude();
+            if(viewHolder.currentMarkerOptions == null) {
+                viewHolder.currentMarkerOptions = new MarkerOptions().position(addressLatLng).title("My Location");
+                currentLocationMarker = viewHolder.map.addMarker(viewHolder.currentMarkerOptions);
             }
-        });
-        viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(addressLatLng));
-        viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
-        DecimalFormat latLngFormat = new DecimalFormat("#.000");
-        String lat = latLngFormat.format(latitude);
-        String lon = latLngFormat.format(longitude);
-        viewHolder.address.setText("Lat: " + lat + " Long: " + lon);
+            else {
+                viewHolder.currentMarkerOptions.position(addressLatLng);
+                currentLocationMarker.setPosition(addressLatLng);
+            }
+            viewHolder.map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                @Override
+                public void onMapLongClick(LatLng latLng) {
+                    DecimalFormat latLngFormat = new DecimalFormat("#.000");
+                    currentLocationMarker.setPosition(latLng);
+                    String latitude = latLngFormat.format(latLng.latitude);
+                    String longitude = latLngFormat.format(latLng.longitude);
+                    viewHolder.address.setText("Lat: " + latitude + " Long: " + longitude);
+                }
+            });
+            viewHolder.map.moveCamera(CameraUpdateFactory.newLatLng(addressLatLng));
+            viewHolder.map.moveCamera(CameraUpdateFactory.zoomTo(15));
+            DecimalFormat latLngFormat = new DecimalFormat("#.000");
+            String lat = latLngFormat.format(latitude);
+            String lon = latLngFormat.format(longitude);
+            viewHolder.address.setText("Lat: " + lat + " Long: " + lon);
+        }
+        catch(SecurityException f) {
+            Toast.makeText(this, "Unable to get current location. Make sure GPS is enabled for this app.",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private class Holder {
@@ -432,7 +527,6 @@ public class EditLocation extends FragmentActivity{
             note3Layout = (RelativeLayout) findViewById(R.id.note3Layout);
             note4Layout = (RelativeLayout) findViewById(R.id.note4Layout);
             note5Layout = (RelativeLayout) findViewById(R.id.note5Layout);
-            titleBarLayout = (RelativeLayout) findViewById(R.id.titleBarEditLocation);
             transparentImage = (ImageView) findViewById(R.id.transparent_image);
             mainScrollView = (ScrollView) findViewById(R.id.mainLocationInfo);
         }

@@ -1,4 +1,4 @@
-package com.example.alexh.locations;
+package com.example.alexh.locations.Adapters;
 
 
 import android.content.Context;
@@ -10,22 +10,25 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Locale;
+import com.example.alexh.locations.Data.LocationArray;
+import com.example.alexh.locations.Data.LocationItem;
+import com.example.alexh.locations.R;
+import com.example.alexh.locations.Activities.ViewLocation;
 
 
-class ListViewAdapter extends ArrayAdapter<String> {
+public class ListViewAdapter extends ArrayAdapter<String> {
 
     protected Context context;
-    protected static Holder viewHolder;
+    protected Holder viewHolder;
+    protected LocationArray currentArray;
 
     public ListViewAdapter(Context context, String[] names, LocationArray locationArray) {
         super(context, R.layout.main_list_layout, names);
         this.context = context;
+        currentArray = locationArray;
     }
 
     @Override
@@ -36,10 +39,8 @@ class ListViewAdapter extends ArrayAdapter<String> {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.main_list_layout, null);
             viewHolder.mainListLayout = (RelativeLayout) view.findViewById(R.id.mainListLayout);
-            viewHolder.viewLocationImage = (ImageButton) view.findViewById(R.id.viewLocationImage);
-            viewHolder.secondaryButtons = (LinearLayout) view.findViewById(R.id.secondaryButtons);
+            //viewHolder.viewLocationImage = (ImageButton) view.findViewById(R.id.viewLocationImage);
             viewHolder.textView = (TextView) view.findViewById(R.id.listText);
-            viewHolder.routeButton = (TextView) view.findViewById(R.id.routeToLocationButton);
             view.setTag(viewHolder);
         }
         else {
@@ -49,20 +50,7 @@ class ListViewAdapter extends ArrayAdapter<String> {
         String selectedItem = getItem(position);
         //sets the text of the item from getItem(int)
         viewHolder.textView.setText(selectedItem);
-        /*
-        viewHolder.textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //sets the visibility of the secondary buttons if the location item is selected
-                if (viewHolder.secondaryButtons.getVisibility() == View.GONE) {
-                    viewHolder.secondaryButtons.setVisibility(View.VISIBLE);
-                } else {
-                    viewHolder.secondaryButtons.setVisibility(View.GONE);
-                }
-            }
-        });
-        */
-        viewHolder.viewLocationImage.setOnClickListener(new View.OnClickListener() {
+        /*viewHolder.viewLocationImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //start new activity
@@ -71,28 +59,13 @@ class ListViewAdapter extends ArrayAdapter<String> {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
-        });
-        viewHolder.routeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LocationItem item = Globals.locationArray.get(position);
-                double latitude = item.getLatitude();
-                double longitude = item.getLongitude();
-                Uri uri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri);
-                mapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                context.startActivity(mapIntent);
-            }
-        });
+        });*/
         return view;
     }
 
     private class Holder {
         protected RelativeLayout mainListLayout;
         protected ImageButton viewLocationImage;
-        protected LinearLayout secondaryButtons;
         protected TextView textView;
-        protected TextView routeButton;
     }
 }

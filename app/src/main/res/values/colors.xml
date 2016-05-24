@@ -3,4 +3,9 @@
 
     <color name="appBlue">#ff26b9ff</color>
     <color name="appOrange">#ffff9436</color>
+
+    <color name="colorPrimaryLight">#ffffffff</color>
+    <color name="colorPrimaryDark">#282828</color>
+    <color name="colorPrimary">#ff26b9ff</color>
+    <color name="colorAccent">#ffff9436</color>
 </resources>

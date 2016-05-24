@@ -1,59 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        android:textColor="#ffffffff"
-        android:background="#ffff0000"
-        android:textSize="20sp"
-        android:layout_marginBottom="5dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="5dp"
-        android:onClick="deleteLocation"
-        android:id="@+id/deleteButtonViewLocation"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/mainInfo"
-        android:layout_above="@id/deleteButtonViewLocation"
-        android:layout_alignParentTop="true">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/appBlue"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Location Information"
-                android:textSize="30sp"
-                android:textColor="#ffffffff"
-                android:paddingLeft="5dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/back_button"
-                android:textColor="#ffffffff"
-                android:layout_alignParentRight="true"
-                android:textSize="17sp"
-                android:paddingRight="10dp"
-                android:paddingTop="10dp"
-                android:onClick="returnToMain"/>
-
-        </RelativeLayout>
+        android:id="@+id/mainInfo">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -216,6 +171,4 @@
 
         </LinearLayout>
 
-
-
-</RelativeLayout>
+</LinearLayout>

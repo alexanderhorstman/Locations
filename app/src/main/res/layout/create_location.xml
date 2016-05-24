@@ -4,42 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/appBlue"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:orientation="horizontal"
-        android:id="@+id/titleBarEditLocation"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Location"
-            android:textSize="30sp"
-            android:textColor="#ffffffff"
-            android:paddingLeft="5dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/finish_location_text"
-            android:textColor="#ffffffff"
-            android:layout_alignParentRight="true"
-            android:textSize="17sp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            android:onClick="finishLocation"/>
-
-    </RelativeLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/titleBarEditLocation"
+
         android:id="@+id/mainLocationInfo">
 
         <LinearLayout

@@ -1,5 +1,5 @@
 
-package com.example.alexh.locations;
+package com.example.alexh.locations.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;

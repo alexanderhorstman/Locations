@@ -1,19 +1,27 @@
-package com.example.alexh.locations;
+package com.example.alexh.locations.Activities;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.text.InputType;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.alexh.locations.Data.LocationArray;
+import com.example.alexh.locations.Data.LocationItem;
+import com.example.alexh.locations.Managers.ListManager;
+import com.example.alexh.locations.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -23,11 +31,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-public class ViewLocation extends FragmentActivity {
+public class ViewLocation extends AppCompatActivity {
 
     private int index;
     private Holder viewHolder;
     private LocationItem item;
+    private LocationArray locationArray;
 
     //fired when the back button is pressed
     @Override
@@ -40,10 +49,13 @@ public class ViewLocation extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_location);
+        setAppBarColor();
         Intent intent = getIntent();
         index = intent.getIntExtra("position", 0);
-        item = Globals.locationArray.get(index);
+        locationArray = ListManager.getManager(this).getMyLocations();
+        item = locationArray.get(index);
         viewHolder = new Holder();
+
         //move to initialize() method
         if(item.getAddress().equals("")) {
             viewHolder.addressView.setVisibility(View.GONE);
@@ -55,7 +67,47 @@ public class ViewLocation extends FragmentActivity {
         viewHolder.locationName.setText(item.getName());
     }
 
-    public void deleteLocation(View view) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.view_location_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if(id == R.id.route_location_settings) {
+            //start an intent to run navigation in Google Maps
+            double latitude = this.item.getLatitude();
+            double longitude = this.item.getLongitude();
+            Uri uri = Uri.parse("google.navigation:q=" + latitude + "," + longitude);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri);
+            mapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            this.startActivity(mapIntent);
+            return true;
+        }
+        else if(id == R.id.edit_location_settings) {
+            Toast.makeText(this, "Not yet implemented.", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        else if(id == R.id.share_location_settings) {
+            //start share location activity
+            return true;
+        }
+        else if(id == R.id.delete_location_settings) {
+            deleteLocation();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteLocation() {
         //get verification using a dialog box
         AlertDialog.Builder dialogBox = new AlertDialog.Builder(this);
         dialogBox.setTitle("Confirmation");
@@ -67,7 +119,7 @@ public class ViewLocation extends FragmentActivity {
         dialogBox.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Globals.locationArray.remove(index);
+                locationArray.remove(index);
                 saveLocationsList();
                 finish();
             }
@@ -80,17 +132,12 @@ public class ViewLocation extends FragmentActivity {
         dialogBox.show();
     }
 
-    public void returnToMain(View view) {
-        //leave this activity
-        finish();
-    }
-
     //used to save the list to file
     public void saveLocationsList() {
         //opens the list file and writes the list to it without append
         try{ObjectOutputStream listOutput =
-                new ObjectOutputStream(openFileOutput(Globals.saveFileName, Context.MODE_PRIVATE));
-            listOutput.writeObject(Globals.locationArray);
+                new ObjectOutputStream(openFileOutput(ListManager.getManager(this).getMyLocationsFileName(), Context.MODE_PRIVATE));
+            listOutput.writeObject(locationArray);
             listOutput.close();
         }
         catch(Exception e){e.printStackTrace();}
@@ -120,6 +167,14 @@ public class ViewLocation extends FragmentActivity {
                 setUpMap();
             }
         }
+    }
+
+    private void setAppBarColor() {
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        getSupportActionBar().setTitle("Location");
     }
 
     private class Holder {
