@@ -1,5 +1,6 @@
 package com.example.alexh.locations.Activities;
 
+import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -35,11 +36,13 @@ public class ShareLocation extends AppCompatActivity {
 
     Holder viewHolder;
     LocationItem itemToShare;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.share_location);
+        context = this;
         Firebase.setAndroidContext(this);
         viewHolder = new Holder();
         setAppBarColor();
@@ -76,8 +79,10 @@ public class ShareLocation extends AppCompatActivity {
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(ShareLocation.this, "This email does not belong to any account. Please use a different email.",
-                            Toast.LENGTH_SHORT).show();
+                    //email does not exist
+                    viewHolder.sendToEmail.setText("");
+                    viewHolder.sendToEmail.setHint("This email does not belong to a user");
+                    viewHolder.sendToEmail.setHintTextColor(ContextCompat.getColor(context, R.color.red));
                 }
             }
 
@@ -127,9 +132,13 @@ public class ShareLocation extends AppCompatActivity {
 
 
     private class Holder {
-        EditText sendToEmail = (EditText) findViewById(R.id.sendToEmailShareLocation);
-        TextView locationName = (TextView) findViewById(R.id.locationNameShareLocation);
+        EditText sendToEmail;
+        TextView locationName;
         GoogleMap map;
 
+        private Holder() {
+            sendToEmail = (EditText) findViewById(R.id.sendToEmailShareLocation);
+            locationName = (TextView) findViewById(R.id.locationNameShareLocation);
+        }
     }
 }

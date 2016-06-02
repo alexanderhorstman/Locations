@@ -167,10 +167,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if (position == 1) {
                     //launch user settings activity
-                    Toast.makeText(context, "Not yet implemented.", Toast.LENGTH_SHORT).show();
                 } else if (position == 2) {
                     //launch app settings activity
-                    Toast.makeText(context, "Not yet implemented.", Toast.LENGTH_SHORT).show();
                 } else if (position == 3) {
                     //logout user
                     UserManager.getManager(context).saveLastUser(null);
@@ -218,8 +216,10 @@ public class MainActivity extends AppCompatActivity {
             holder.sharedListButton.setTextColor(black);
             //change button colors to show that the list is selected
             holder.myListButton.setTextColor(select);
-            holder.selectedMyList.setVisibility(View.VISIBLE);
-            holder.selectedSharedList.setVisibility(View.INVISIBLE);
+            //holder.selectedMyList.setVisibility(View.VISIBLE);
+            //holder.selectedSharedList.setVisibility(View.INVISIBLE);
+            holder.selectedMyList.setBackgroundColor(ContextCompat.getColor(this,R.color.appOrange));
+            holder.selectedSharedList.setBackgroundColor(ContextCompat.getColor(this,R.color.appBlue));
         }
         else if(id == R.id.shared_list_button) {
             //set correct tab
@@ -229,8 +229,11 @@ public class MainActivity extends AppCompatActivity {
             holder.myListButton.setTextColor(black);
             //change button colors to show that the list is selected
             holder.sharedListButton.setTextColor(select);
-            holder.selectedMyList.setVisibility(View.INVISIBLE);
-            holder.selectedSharedList.setVisibility(View.VISIBLE);
+            //holder.selectedMyList.setVisibility(View.INVISIBLE);
+            //holder.selectedSharedList.setVisibility(View.VISIBLE);
+            holder.selectedMyList.setBackgroundColor(ContextCompat.getColor(this,R.color.appBlue));
+            holder.selectedSharedList.setBackgroundColor(ContextCompat.getColor(this,R.color.appOrange));
+
         }
     }
 

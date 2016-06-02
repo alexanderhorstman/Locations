@@ -29,7 +29,7 @@ public class UserLogin extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_sign_in);
+        setContentView(R.layout.user_log_in);
         context = this;
         Firebase.setAndroidContext(this);
         viewHolder = new Holder();
@@ -69,12 +69,16 @@ public class UserLogin extends AppCompatActivity {
                         FirebaseManager.getManager(context).addListener("sharedLocations/" + validEmail + "/");
                         finish();
                     } else {
-                        Toast.makeText(UserLogin.this, "Incorrect password. Please try again.",
-                                Toast.LENGTH_SHORT).show();
+                        //incorrect password
+                        viewHolder.password.setText("");
+                        viewHolder.password.setHint("Incorrect password");
+                        viewHolder.password.setHintTextColor(ContextCompat.getColor(context, R.color.red));
                     }
                 } else {
-                    Toast.makeText(getOuterClass(), "This email does not belong to any account. Please use a different email.",
-                            Toast.LENGTH_SHORT).show();
+                    //incorrect email
+                    viewHolder.email.setText("");
+                    viewHolder.email.setHint("Incorrect email");
+                    viewHolder.email.setHintTextColor(ContextCompat.getColor(context, R.color.red));
                 }
             }
 
@@ -104,6 +108,22 @@ public class UserLogin extends AppCompatActivity {
         private Holder() {
             email = (EditText) findViewById(R.id.userLoginEmailEditText);
             password = (EditText) findViewById(R.id.userLoginPasswordEditText);
+            email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(hasFocus) {
+                        email.setHint("");
+                    }
+                }
+            });
+            password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(hasFocus) {
+                        password.setHint("");
+                    }
+                }
+            });
         }
     }
 }
