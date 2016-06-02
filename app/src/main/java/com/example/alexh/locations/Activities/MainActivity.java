@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.alexh.locations.Adapters.ListPagerAdapter;
 import com.example.alexh.locations.Data.User;
+import com.example.alexh.locations.Managers.FirebaseManager;
 import com.example.alexh.locations.Managers.ListManager;
 import com.example.alexh.locations.Managers.UserManager;
 import com.example.alexh.locations.R;
@@ -61,7 +62,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        listPagerAdapter.updatePage(0,this);
+        listPagerAdapter.updatePage(0, this);
+        try {
+            listPagerAdapter.updatePage(1, this);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -74,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
         UserManager userManager = UserManager.getManager(this);
         userManager.readLastUser();
         loggedInUser = userManager.getLastUser();
+        if(loggedInUser!=null) {
+            FirebaseManager.getManager(context).addListener("sharedLocations/" + loggedInUser.getEmail() + "/");
+        }
         if(loggedInUser == null) {
             Intent intent = new Intent(this, UserLogin.class);
             startActivityForResult(intent, UserManager.LOGIN_USER_ACTIVITY);
@@ -125,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void addNewLocation(View view) {
         Intent intent = new Intent(this, CreateLocation.class);
-        //intent.putExtra("location type", "new location");
         startActivity(intent);
     }
 
@@ -142,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDrawer() {
-        String[] options = { "User Settings", "App Settings", "Logout" };
+        String[] options = { "Check for shared locations", "User Settings", "App Settings", "Logout" };
         drawerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, options);
         holder.drawerList.setAdapter(drawerAdapter);
 
@@ -150,11 +159,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int item = view.getId();
-                if (position == 0) {
+                if(position == 0) {
+                    FirebaseManager.getManager(context).singleRead("sharedLocations/" + loggedInUser.getEmail() + "/");
+                    listPagerAdapter.updatePage(1, context);
+                    selectList(findViewById(R.id.my_list_button));
+                    holder.drawerLayout.closeDrawers();
+                }
+                else if (position == 1) {
                     //launch user settings activity
-                } else if (position == 1) {
-                    //launch app settings activity
+                    Toast.makeText(context, "Not yet implemented.", Toast.LENGTH_SHORT).show();
                 } else if (position == 2) {
+                    //launch app settings activity
+                    Toast.makeText(context, "Not yet implemented.", Toast.LENGTH_SHORT).show();
+                } else if (position == 3) {
                     //logout user
                     UserManager.getManager(context).saveLastUser(null);
                     Intent intent = new Intent(context, UserLogin.class);
@@ -201,6 +218,8 @@ public class MainActivity extends AppCompatActivity {
             holder.sharedListButton.setTextColor(black);
             //change button colors to show that the list is selected
             holder.myListButton.setTextColor(select);
+            holder.selectedMyList.setVisibility(View.VISIBLE);
+            holder.selectedSharedList.setVisibility(View.INVISIBLE);
         }
         else if(id == R.id.shared_list_button) {
             //set correct tab
@@ -210,6 +229,8 @@ public class MainActivity extends AppCompatActivity {
             holder.myListButton.setTextColor(black);
             //change button colors to show that the list is selected
             holder.sharedListButton.setTextColor(select);
+            holder.selectedMyList.setVisibility(View.INVISIBLE);
+            holder.selectedSharedList.setVisibility(View.VISIBLE);
         }
     }
 
@@ -251,6 +272,8 @@ public class MainActivity extends AppCompatActivity {
         protected Toolbar toolbar;
         protected ListView drawerList;
         protected DrawerLayout drawerLayout;
+        protected View selectedMyList;
+        protected View selectedSharedList;
 
         public ViewHolder() {
             myListButton = (Button)findViewById(R.id.my_list_button);
@@ -259,6 +282,8 @@ public class MainActivity extends AppCompatActivity {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             drawerList = (ListView) findViewById(R.id.navList);
             drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            selectedMyList = findViewById(R.id.selectMyList);
+            selectedSharedList = findViewById(R.id.selectSharedList);
         }
     }
 }

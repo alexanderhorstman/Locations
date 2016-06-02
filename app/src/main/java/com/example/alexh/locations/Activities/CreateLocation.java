@@ -20,6 +20,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -142,7 +143,7 @@ public class CreateLocation extends AppCompatActivity{
                         viewHolder.note5View.setText(notesToAdd.get(4));
                         viewHolder.noteAddButton.setVisibility(View.GONE);
                     }
-                    viewHolder.titleBarLayout.requestFocus();
+
                 }
             });
             dialogBox.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -450,9 +451,30 @@ public class CreateLocation extends AppCompatActivity{
 
     public void useCurrentLocation(View view) {
         usesCurrentLocation = true;
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location currentLocation;
         try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            });
             currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             final LatLng addressLatLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             double latitude = currentLocation.getLatitude();
@@ -494,7 +516,6 @@ public class CreateLocation extends AppCompatActivity{
         GoogleMap map;
         LinearLayout mapView;
         LinearLayout addressView;
-        RelativeLayout titleBarLayout;
         TextView noteAddButton;
         TextView note1View;
         TextView note2View;

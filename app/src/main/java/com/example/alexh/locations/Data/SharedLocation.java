@@ -11,6 +11,10 @@ public class SharedLocation extends LocationItem implements Serializable{
 
     public SharedLocation(String sender, LocationItem item) {
         super(item.getName(),item.getLatitude(),item.getLongitude());
+        if(item.hasAddress()) {
+            setAddress(item.getAddress());
+        }
+        addNotes(item.getNotes());
         this.sender = sender;
     }
 

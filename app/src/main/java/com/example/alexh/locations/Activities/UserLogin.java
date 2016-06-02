@@ -24,7 +24,7 @@ import com.firebase.client.ValueEventListener;
 public class UserLogin extends AppCompatActivity {
 
     public Holder viewHolder;
-    Context context;
+    static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +51,13 @@ public class UserLogin extends AppCompatActivity {
         final String password = viewHolder.password.getText().toString();
 
         final String validEmail = email.replace(".", ",");
-        Firebase firebaseRef = FirebaseManager.getManager().getReference("users/" + validEmail + "/");
+        Firebase firebaseRef = FirebaseManager.getManager(context).getReference("users/" + validEmail + "/");
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Toast.makeText(getOuterClass(), "test", Toast.LENGTH_SHORT).show();
                 if (dataSnapshot.exists()) {
-                    if(password.equals(dataSnapshot.child(password + "/").getKey())) {
+                    if (password.equals(dataSnapshot.child("password/").getValue())) {
                         String name = (String) dataSnapshot.child("name/").getValue();
                         User newUser = new User(name, validEmail, password);
                         UserManager manager = UserManager.getManager(context);
@@ -64,14 +65,15 @@ public class UserLogin extends AppCompatActivity {
                         Intent intent = new Intent();
                         intent.putExtra("user", newUser);
                         setResult(RESULT_OK, intent);
+                        FirebaseManager.getManager(context).singleRead("sharedLocations/" + validEmail + "/");
+                        FirebaseManager.getManager(context).addListener("sharedLocations/" + validEmail + "/");
                         finish();
-                    }
-                    else {
+                    } else {
                         Toast.makeText(UserLogin.this, "Incorrect password. Please try again.",
                                 Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(UserLogin.this, "This email does not belong to any account. Please use a different email.",
+                    Toast.makeText(getOuterClass(), "This email does not belong to any account. Please use a different email.",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -81,6 +83,10 @@ public class UserLogin extends AppCompatActivity {
 
             }
         });
+    }
+
+    private UserLogin getOuterClass() {
+        return this;
     }
 
     private void setAppBarColor() {

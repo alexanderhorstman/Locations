@@ -131,11 +131,11 @@ public class ListManager {
         }
     }
 
-    public boolean saveSharedLocations(Context context) {
+    public boolean saveSharedLocations() {
         try {
             ObjectOutputStream listOutput =
                     new ObjectOutputStream(context.openFileOutput(sharedLocationsFileName, Context.MODE_PRIVATE));
-            listOutput.writeObject(manager.getMyLocations());
+            listOutput.writeObject(manager.getSharedLocations());
             listOutput.close();
             return true;
         }

@@ -90,7 +90,7 @@
             android:text="Cancel"
             android:onClick="cancelShare"
             android:layout_margin="5dp"
-            android:background="#ffff0000"/>
+            android:background="@color/appBlue"/>
 
         <Button
             android:layout_width="wrap_content"
@@ -99,7 +99,7 @@
             android:text="Send"
             android:onClick="sendLocation"
             android:layout_margin="5dp"
-            android:background="#ff00ff00"/>
+            android:background="@color/appBlue"/>
 
     </LinearLayout>
 

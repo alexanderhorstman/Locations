@@ -50,22 +50,11 @@ public class ListViewAdapter extends ArrayAdapter<String> {
         String selectedItem = getItem(position);
         //sets the text of the item from getItem(int)
         viewHolder.textView.setText(selectedItem);
-        /*viewHolder.viewLocationImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //start new activity
-                Intent intent = new Intent(context, ViewLocation.class);
-                intent.putExtra("position", position);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
-            }
-        });*/
         return view;
     }
 
     private class Holder {
         protected RelativeLayout mainListLayout;
-        protected ImageButton viewLocationImage;
         protected TextView textView;
     }
 }

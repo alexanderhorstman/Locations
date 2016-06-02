@@ -54,12 +54,12 @@ public class CreateUser extends AppCompatActivity {
         }
         final String validEmail = email.replace('.',',');
         final User newUser = new User(name, email, password);
-        Firebase firebaseRef = FirebaseManager.getManager().getReference("users/" + validEmail + "/");
+        Firebase firebaseRef = FirebaseManager.getManager(getBaseContext()).getReference("users/" + validEmail + "/");
         firebaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    FirebaseManager fireManager = FirebaseManager.getManager();
+                    FirebaseManager fireManager = FirebaseManager.getManager(getBaseContext());
                     Firebase ref = fireManager.getReference("users/" + validEmail + "/");
                     ref.setValue(newUser);
                     setResult(RESULT_OK);

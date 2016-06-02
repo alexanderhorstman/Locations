@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.example.alexh.locations.Activities.ViewLocation;
+import com.example.alexh.locations.Activities.ViewSharedLocation;
 import com.example.alexh.locations.Adapters.ListViewAdapter;
 import com.example.alexh.locations.Data.LocationArray;
 import com.example.alexh.locations.Managers.ListManager;
@@ -43,7 +44,7 @@ public class SharedLocationsFragment extends ListFragment implements AdapterView
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,long id) {
         //launch view location activity
-        Intent intent = new Intent(getContext(), ViewLocation.class);
+        Intent intent = new Intent(getContext(), ViewSharedLocation.class);
         intent.putExtra("position", position);
         startActivity(intent);
     }

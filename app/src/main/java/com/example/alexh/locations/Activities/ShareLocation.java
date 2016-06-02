@@ -10,13 +10,18 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.alexh.locations.Data.LocationItem;
 import com.example.alexh.locations.Data.SharedLocation;
+import com.example.alexh.locations.Data.User;
 import com.example.alexh.locations.Managers.FirebaseManager;
 import com.example.alexh.locations.Managers.UserManager;
 import com.example.alexh.locations.R;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -53,14 +58,35 @@ public class ShareLocation extends AppCompatActivity {
         //create SharedLocation
         UserManager manager = UserManager.getManager(this);
         String myEmail = manager.getLastUser().getEmail();
-        SharedLocation locationToSend = new SharedLocation(myEmail, itemToShare);
+        final SharedLocation locationToSend = new SharedLocation(myEmail, itemToShare);
         //get firebase reference
-        FirebaseManager firebaseManager = FirebaseManager.getManager();
-        Firebase ref = firebaseManager.getReference("sharedLocations/" + viewHolder.sendToEmail.getText().toString() + "/");
+        final FirebaseManager firebaseManager = FirebaseManager.getManager(getBaseContext());
+
         //write to firebase
-        Map<String, Object> shared = new HashMap<>();
-        shared.put(viewHolder.sendToEmail.getText().toString(), locationToSend);
-        ref.push().setValue(shared);
+        //check if target email is a valid user
+        Firebase emailCheckRef = firebaseManager.getReference("users/" +
+                viewHolder.sendToEmail.getText().toString().replace('.',',') + "/");
+        emailCheckRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    final Firebase ref = firebaseManager.getReference("sharedLocations/" +
+                            viewHolder.sendToEmail.getText().toString().replace('.',',') + "/").push();
+                    ref.setValue(locationToSend);
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    Toast.makeText(ShareLocation.this, "This email does not belong to any account. Please use a different email.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
     }
 
 

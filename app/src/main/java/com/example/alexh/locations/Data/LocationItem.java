@@ -11,7 +11,7 @@ public class LocationItem implements Serializable {
     private String address = "";	//Address of the location.
     private double latitude;	//Latitude of the location.
     private double longitude;	//Longitude of the location.
-    private List<String> notes = new ArrayList<String>();	//New String array that can hold 5 strings.
+    private List<String> notes = new ArrayList<>();	//New String array that can hold 5 strings.
     private int numNotes = 0;	//An int to keep track of how many notes have been added.
 
     /*

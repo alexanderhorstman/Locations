@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Locations</string>
+    <string name="app_name">TASLA</string>
 
     <string name="action_settings">Settings</string>
     <string name="back_button"><![CDATA[<Back]]></string>

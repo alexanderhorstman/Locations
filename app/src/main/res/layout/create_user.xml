@@ -70,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#fc3333"
+            android:background="@color/appBlue"
             android:text="Cancel"
             android:onClick="cancel"/>
 
@@ -83,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="#03b61e"
+            android:background="@color/appBlue"
             android:text="Accept"
             android:onClick="finishUser"/>
 

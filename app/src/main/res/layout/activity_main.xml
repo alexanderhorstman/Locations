@@ -63,6 +63,29 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tab_bar"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="@color/appOrange"
+                    android:layout_weight="1"
+                    android:id="@+id/selectMyList"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="@color/appOrange"
+                    android:layout_weight="1"
+                    android:id="@+id/selectSharedList"/>
+
+            </LinearLayout>
+
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
                 android:layout_width="fill_parent"
